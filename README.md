@@ -1,3 +1,2 @@
 # bibliography-style-files
-Bibliography style files
-cseny.bst is for Council of Science Editors name-year (ninth edition)
+cseny.bst is a BibTeX bibliography style for the Council of Science Editors name-year (ninth edition) citation style
