@@ -1655,9 +1655,9 @@ FUNCTION {presort}
   "    "
   *
   month field.or.null 			% sort on    
-  *								% month if
-  "    "							% given, for
-  *								% CSE name-year style
+  *					% month if
+  "    "				% given, for
+  *					% CSE name-year style
   title field.or.null
   sort.format.title
   *
@@ -1721,9 +1721,9 @@ FUNCTION {bib.sort.order}
   "    "
   *
   month field.or.null 			% sort on  
-  *								% month if
-  "    "							% given, for
-  *								% CSE name-year style
+  *					% month if
+  "    "				% given, for
+  *					% CSE name-year style
   title field.or.null
   sort.format.title
   *
