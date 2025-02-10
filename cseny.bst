@@ -161,7 +161,7 @@ FUNCTION {output.year.month.check}
     { write$
       ". " year * extra.label *
       month empty$
-      { "" *}
+      { "" * }
       { " " * month * "" * }
       if$
       mid.sentence 'output.state :=
