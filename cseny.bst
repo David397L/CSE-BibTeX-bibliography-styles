@@ -1,7 +1,7 @@
 %%% ====================================================================
 %%%  @BibTeX-style-file{
 %%%     author          = "David Lamkin",
-%%%     version         = "B.01",
+%%%     version         = "B.02",
 %%%     date            = "2025",
 %%%     filename        = "cseny.bst",
 %%%     address         = "",
@@ -15,28 +15,28 @@
 %%%                        incorporating features of Patrick W. Daly 
 %%%                        and Arthur Ogawa's merlin.mbs".
 %%%
-%%%     Usage: The preamble of the .tex document has to contain at least:
+%%%     	Usage: The preamble of the .tex document has to contain at least:
 %%% 
-%%%     \usepackage[]{natbib}
-%%%     \bibpunct[, ]{(}{)}{;}{a}{}{,}
-%%%     \newcommand{\csemonth}[1]{\ifcase #1\or Jan\or Feb\or Mar\or Apr\or 
-%%%        May\or Jun\or Jul\or Aug\or Sep\or Oct\or Nov\or Dec\else
-%%%        {#1}\fi}
+%%%		\usepackage[]{natbib}
+%%%		\bibpunct[, ]{(}{)}{;}{a}{}{,}
+%%%		\newcommand{\nummonth}[1]{\ifcase #1\or Jan\or Feb\or Mar\or Apr\or 
+%%%			May\or Jun\or Jul\or Aug\or Sep\or Oct\or Nov\or Dec\else
+%%%			{#1}\fi}
 %%%
-%%%     Besides configuration of natbib.sty, this includes a macro needed 
+%%%     Besides configuration of natbib.sty,	this includes a macro needed 
 %%%     to output the names of the months after chronological sorting 
-%%%     performed by cseny.bst; this feature is derived from a similar 
-%%%     function in Erik Meijer's apacite package. The inclusion of
+%%%		performed by cseny.bst; this feature is derived from a similar 
+%%%		function in Erik Meijer's apacite package. The inclusion of
 %%%
-%%%     \usepackage{doi} 
-%%%     \renewcommand{\doitext}{https://doi.org/} 
+%%%		\usepackage{doi} 
+%%%		\renewcommand{\doitext}{https://doi.org/} 
 %%%
-%%%     (or equivalent) is also required in order to hyperlink DOI 
-%%%     numbers to doi.org and output the appropriate text prefix. 
+%%%		(or equivalent) is also required in order to hyperlink DOI 
+%%%		numbers to doi.org and output the appropriate text prefix. 
 %%%  }
 %%% ====================================================================
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% BibTeX `cseny' bibliography style (10-Feb-25 version)
+% BibTeX `cseny' bibliography style (18-Feb-25 version)
 % Adapted from the `cbe' style, version 0.99a; for BibTeX version 0.99a.
 % Copyright (C) 2025, All rights reserved.
 % Copying of this file is allowed, provided that if you make any changes at all
@@ -58,14 +58,14 @@
 %
 % History:
 %   15-sep-86	(SK,OP)	Original version, by Susan King and Oren Patashnik.
-%   10-nov-86	(OP) Truncated the sort.key$ string to the correct length
-%               in bib.sort.order to eliminate error message.
-%   24-jan-88	(OP) Updated for BibTeX version 0.99a, from alpha.bst 0.99a;
-%		apalike now sorts by author, then year, then title;
-%		THIS `apalike' VERSION DOES NOT WORK WITH BIBTEX 0.98i.
-%   10-feb-25	Updated for CSE name-year (9th edition), for BibTeX 0.99d;
-%		cseny sorts by author, then year, then month (where a
-%		month is present in the BibTeX database), then title.
+%   10-nov-86	(OP)	Truncated the sort.key$ string to the correct length
+%				in bib.sort.order to eliminate error message.
+%   24-jan-88	(OP)	Updated for BibTeX version 0.99a, from alpha.bst 0.99a;
+%				apalike now sorts by author, then year, then title;
+%				THIS `apalike' VERSION DOES NOT WORK WITH BIBTEX 0.98i.
+%	18-feb-25	Updated for CSE name-year (9th edition), for BibTeX 0.99d;
+%				cseny sorts by author, then year, then month (where a
+%				month is present in the BibTeX database), then title.
 
 ENTRY
   { address
@@ -1410,18 +1410,18 @@ FUNCTION {default.type} { misc }
 % The standard "month" macros have been redefined so that 
 % they can be sorted in chronological order.
 
-MACRO {jan} {"{\csemonth{01}}"}	%	{"Jan"}
-MACRO {feb} {"{\csemonth{02}}"}	%	{"Feb"}
-MACRO {mar} {"{\csemonth{03}}"}	%	{"Mar"}
-MACRO {apr} {"{\csemonth{04}}"}	%	{"Apr"}
-MACRO {may} {"{\csemonth{05}}"}	%	{"May"}
-MACRO {jun} {"{\csemonth{06}}"}	%	{"Jun"}
-MACRO {jul} {"{\csemonth{07}}"}	%	{"Jul"}
-MACRO {aug} {"{\csemonth{08}}"}	%	{"Aug"}
-MACRO {sep} {"{\csemonth{09}}"}	%	{"Sep"}
-MACRO {oct} {"{\csemonth{10}}"}	%	{"Oct"}
-MACRO {nov} {"{\csemonth{11}}"}	%	{"Nov"}
-MACRO {dec} {"{\csemonth{12}}"}	%	{"Dec"}
+MACRO {jan} {"{\nummonth{01}}"}	%	{"Jan"}
+MACRO {feb} {"{\nummonth{02}}"}	%	{"Feb"}
+MACRO {mar} {"{\nummonth{03}}"}	%	{"Mar"}
+MACRO {apr} {"{\nummonth{04}}"}	%	{"Apr"}
+MACRO {may} {"{\nummonth{05}}"}	%	{"May"}
+MACRO {jun} {"{\nummonth{06}}"}	%	{"Jun"}
+MACRO {jul} {"{\nummonth{07}}"}	%	{"Jul"}
+MACRO {aug} {"{\nummonth{08}}"}	%	{"Aug"}
+MACRO {sep} {"{\nummonth{09}}"}	%	{"Sep"}
+MACRO {oct} {"{\nummonth{10}}"}	%	{"Oct"}
+MACRO {nov} {"{\nummonth{11}}"}	%	{"Nov"}
+MACRO {dec} {"{\nummonth{12}}"}	%	{"Dec"}
 
 % Database entries will be sorted by month if given, even when
 % the month is not output in the bibitem, e.g. journal articles.
@@ -1654,10 +1654,10 @@ FUNCTION {presort}
   *
   "    "
   *
-  month field.or.null 			% sort on    
-  *					% month if
-  "    "				% given, for
-  *					% CSE name-year style
+  month field.or.null            % sort on
+  *	                             % month if
+  "    "                         % given, for
+  *                              % CSE name-year style
   title field.or.null
   sort.format.title
   *
@@ -1720,10 +1720,10 @@ FUNCTION {bib.sort.order}
   *
   "    "
   *
-  month field.or.null 			% sort on  
-  *					% month if
-  "    "				% given, for
-  *					% CSE name-year style
+  month field.or.null            % sort on 
+  *                              % month if
+  "    "                         % given, for
+  *                              % CSE name-year style
   title field.or.null
   sort.format.title
   *
