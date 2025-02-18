@@ -20,12 +20,12 @@
 %%%		\usepackage[]{natbib}
 %%%		\bibpunct[, ]{(}{)}{;}{a}{}{,}
 %%%		\newcommand{\nummonth}[1]{\ifcase #1\or Jan\or Feb\or Mar\or Apr\or 
-%%%			May\or Jun\or Jul\or Aug\or Sep\or Oct\or Nov\or Dec\else
-%%%			{#1}\fi}
+%%%		   May\or Jun\or Jul\or Aug\or Sep\or Oct\or Nov\or Dec\else
+%%%		   {#1}\fi}
 %%%
-%%%     Besides configuration of natbib.sty,	this includes a macro needed 
-%%%     to output the names of the months after chronological sorting 
-%%%		performed by cseny.bst; this feature is derived from a similar 
+%%%             Besides configuration of natbib.sty, this includes a macro needed 
+%%%    	        to output the names of the months after chronological sorting 
+%%%	        performed by cseny.bst; this feature is derived from a similar 
 %%%		function in Erik Meijer's apacite package. The inclusion of
 %%%
 %%%		\usepackage{doi} 
@@ -59,13 +59,13 @@
 % History:
 %   15-sep-86	(SK,OP)	Original version, by Susan King and Oren Patashnik.
 %   10-nov-86	(OP)	Truncated the sort.key$ string to the correct length
-%				in bib.sort.order to eliminate error message.
+%			in bib.sort.order to eliminate error message.
 %   24-jan-88	(OP)	Updated for BibTeX version 0.99a, from alpha.bst 0.99a;
-%				apalike now sorts by author, then year, then title;
-%				THIS `apalike' VERSION DOES NOT WORK WITH BIBTEX 0.98i.
-%	18-feb-25	Updated for CSE name-year (9th edition), for BibTeX 0.99d;
-%				cseny sorts by author, then year, then month (where a
-%				month is present in the BibTeX database), then title.
+%			apalike now sorts by author, then year, then title;
+%			THIS `apalike' VERSION DOES NOT WORK WITH BIBTEX 0.98i.
+%   18-feb-25	Updated for CSE name-year (9th edition), for BibTeX 0.99d;
+%			cseny sorts by author, then year, then month (where a
+%			month is present in the BibTeX database), then title.
 
 ENTRY
   { address
@@ -1655,7 +1655,7 @@ FUNCTION {presort}
   "    "
   *
   month field.or.null            % sort on
-  *	                             % month if
+  *                              % month if
   "    "                         % given, for
   *                              % CSE name-year style
   title field.or.null
