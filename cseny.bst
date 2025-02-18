@@ -15,7 +15,7 @@
 %%%                        incorporating features of Patrick W. Daly 
 %%%                        and Arthur Ogawa's merlin.mbs".
 %%%
-%%%     	Usage: The preamble of the .tex document has to contain at least:
+%%%     Usage: The preamble of the .tex document has to contain at least:
 %%% 
 %%%     \usepackage[]{natbib}
 %%%     \bibpunct[, ]{(}{)}{;}{a}{}{,}
@@ -23,16 +23,16 @@
 %%%        May\or Jun\or Jul\or Aug\or Sep\or Oct\or Nov\or Dec\else
 %%%        {#1}\fi}
 %%%
-%%%     Besides configuration of natbib.sty,	this includes a macro needed 
+%%%     Besides configuration of natbib.sty, this includes a macro needed 
 %%%     to output the names of the months after chronological sorting 
-%%%		performed by cseny.bst; this feature is derived from a similar 
-%%%		function in Erik Meijer's apacite package. The inclusion of
+%%%	performed by cseny.bst; this feature is derived from a similar 
+%%%	function in Erik Meijer's apacite package. The inclusion of
 %%%
-%%%		\usepackage{doi} 
-%%%		\renewcommand{\doitext}{https://doi.org/} 
+%%%	\usepackage{doi} 
+%%%	\renewcommand{\doitext}{https://doi.org/} 
 %%%
-%%%		(or equivalent) is also required in order to hyperlink DOI 
-%%%		numbers to doi.org and output the appropriate text prefix. 
+%%%	(or equivalent) is also required in order to hyperlink DOI 
+%%%	numbers to doi.org and output the appropriate text prefix. 
 %%%  }
 %%% ====================================================================
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
