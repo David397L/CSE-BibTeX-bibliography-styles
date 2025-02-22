@@ -1,7 +1,7 @@
 %%% ====================================================================
 %%%  @BibTeX-style-file{
 %%%     author          = "David Lamkin",
-%%%     version         = "B.02",
+%%%     version         = "B.03",
 %%%     date            = "2025",
 %%%     filename        = "cseny.bst",
 %%%     address         = "",
@@ -15,7 +15,7 @@
 %%%                        incorporating features of Patrick W. Daly 
 %%%                        and Arthur Ogawa's merlin.mbs".
 %%%
-%%%     Usage: The preamble of the .tex document has to contain at least:
+%%%     	Usage: The preamble of the .tex document has to contain at least:
 %%% 
 %%%     \usepackage[]{natbib}
 %%%     \bibpunct[, ]{(}{)}{;}{a}{}{,}
@@ -25,18 +25,18 @@
 %%%
 %%%     Besides configuration of natbib.sty, this includes a macro needed 
 %%%     to output the names of the months after chronological sorting 
-%%%	performed by cseny.bst; this feature is derived from a similar 
-%%%	function in Erik Meijer's apacite package. The inclusion of
+%%%     performed by cseny.bst; this feature is derived from a similar 
+%%%     function in Erik Meijer's apacite package. The inclusion of
 %%%
-%%%	\usepackage{doi} 
-%%%	\renewcommand{\doitext}{https://doi.org/} 
+%%%     \usepackage{doi} 
+%%%     \renewcommand{\doitext}{https://doi.org/} 
 %%%
-%%%	(or equivalent) is also required in order to hyperlink DOI 
-%%%	numbers to doi.org and output the appropriate text prefix. 
+%%%     (or equivalent) is also required in order to hyperlink DOI 
+%%%     numbers to doi.org and output the appropriate text prefix. 
 %%%  }
 %%% ====================================================================
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% BibTeX `cseny' bibliography style (18-Feb-25 version)
+% BibTeX `cseny' bibliography style (22-Feb-25 version)
 % Adapted from the `cbe' style, version 0.99a; for BibTeX version 0.99a.
 % Copyright (C) 2025, All rights reserved.
 % Copying of this file is allowed, provided that if you make any changes at all
@@ -63,7 +63,7 @@
 %   24-jan-88   (OP) Updated for BibTeX version 0.99a, from alpha.bst 0.99a;
 %               apalike now sorts by author, then year, then title;
 %               THIS `apalike' VERSION DOES NOT WORK WITH BIBTEX 0.98i.
-%   18-feb-25   Updated for CSE name-year (9th edition), for BibTeX 0.99d;
+%   22-feb-25   Updated for CSE name-year (9th edition), for BibTeX 0.99d;
 %               cseny sorts by author, then year, then month (where a
 %               month is present in the BibTeX database), then title.
 
@@ -161,7 +161,7 @@ FUNCTION {output.year.month.check}
     { write$
       ". " year * extra.label *
       month empty$
-      { "" *}
+      { "" * }
       { " " * month * "" * }
       if$
       mid.sentence 'output.state :=
@@ -570,13 +570,6 @@ FUNCTION {format.title}
   if$
 }
 
-FUNCTION {format.type}
-{ type empty$
-    'skip$
-    { add.blank "[" type * "]" * }
-  if$
-}
-
 FUNCTION {n.dashify}
 { 't :=
   ""
@@ -817,16 +810,15 @@ FUNCTION {format.journal.pages}
   if$
 }
 
-FUNCTION {format.newspaper.pages} % in case the need arises
+FUNCTION {format.newspaper.pages} % special for @newspaper
 %
-% We might need this copy of {format.journal.pages} with 
-% something in it for physical pages?
+% Copy of {format.journal.pages} with added space for newspaper pages
 %
 { pages duplicate$ empty$ 'pop$
     { swap$ duplicate$ empty$
         { pop$ pop$ format.pages }
         {
-          ":" *
+          ": " *  %  ":" *
           swap$
           n.dashify
           "pages" bibinfo.check
@@ -955,8 +947,8 @@ FUNCTION {empty.misc.check}
 FUNCTION {format.thesis.type}
 { type empty$
     'skip$
-    { pop$
-      type "t" change.case$
+    { pop$ 
+      "[" * type "t" change.case$ "]" * 
     }
   if$
 }
@@ -1266,8 +1258,8 @@ FUNCTION {misc}
 FUNCTION {newspaper}
 %
 % This function is work in progress, to allow newspaper article 
-% format to vary from that of a journal (the date, at least).
-% The journal fields should perhaps be renamed to newspaper?
+% format to vary from that of a journal (date and pages at least).
+% The journal fields should all perhaps be renamed to newspaper?
 % The crossref might not be needed for a newspaper article.
 %
 { output.bibitem
@@ -1287,7 +1279,7 @@ FUNCTION {newspaper}
     { format.article.crossref output.nonnull }
   if$
   eid empty$
-    { format.journal.pages }
+    { format.newspaper.pages } % { format.journal.pages }
     { format.journal.eid }
   if$
   new.sentence
@@ -1299,7 +1291,8 @@ FUNCTION {newspaper}
 
 FUNCTION {patent}
 %
-% Requires inventor, assignee and number fields and a key in .bib
+% Requires inventor, assignee and number fields 
+% and a key in .bib
 %
 { output.bibitem
   format.inventors "inventor" output.check
@@ -1410,18 +1403,18 @@ FUNCTION {default.type} { misc }
 % The standard "month" macros have been redefined so that 
 % they can be sorted in chronological order.
 
-MACRO {jan} {"{\nummonth{01}}"}	%	{"Jan"}
-MACRO {feb} {"{\nummonth{02}}"}	%	{"Feb"}
-MACRO {mar} {"{\nummonth{03}}"}	%	{"Mar"}
-MACRO {apr} {"{\nummonth{04}}"}	%	{"Apr"}
-MACRO {may} {"{\nummonth{05}}"}	%	{"May"}
-MACRO {jun} {"{\nummonth{06}}"}	%	{"Jun"}
-MACRO {jul} {"{\nummonth{07}}"}	%	{"Jul"}
-MACRO {aug} {"{\nummonth{08}}"}	%	{"Aug"}
-MACRO {sep} {"{\nummonth{09}}"}	%	{"Sep"}
-MACRO {oct} {"{\nummonth{10}}"}	%	{"Oct"}
-MACRO {nov} {"{\nummonth{11}}"}	%	{"Nov"}
-MACRO {dec} {"{\nummonth{12}}"}	%	{"Dec"}
+MACRO {jan} {"{\nummonth{01}}"}  %  {"Jan"}
+MACRO {feb} {"{\nummonth{02}}"}  %  {"Feb"}
+MACRO {mar} {"{\nummonth{03}}"}  %  {"Mar"}
+MACRO {apr} {"{\nummonth{04}}"}  %  {"Apr"}
+MACRO {may} {"{\nummonth{05}}"}  %  {"May"}
+MACRO {jun} {"{\nummonth{06}}"}  %  {"Jun"}
+MACRO {jul} {"{\nummonth{07}}"}  %  {"Jul"}
+MACRO {aug} {"{\nummonth{08}}"}  %  {"Aug"}
+MACRO {sep} {"{\nummonth{09}}"}  %  {"Sep"}
+MACRO {oct} {"{\nummonth{10}}"}  %  {"Oct"}
+MACRO {nov} {"{\nummonth{11}}"}  %  {"Nov"}
+MACRO {dec} {"{\nummonth{12}}"}  %  {"Dec"}
 
 % Database entries will be sorted by month if given, even when
 % the month is not output in the bibitem, e.g. journal articles.
@@ -1655,7 +1648,7 @@ FUNCTION {presort}
   "    "
   *
   month field.or.null            % sort on
-  *	                             % month if
+  *                              % month if
   "    "                         % given, for
   *                              % CSE name-year style
   title field.or.null
