@@ -15,7 +15,7 @@
 %%%                        incorporating features of Patrick W. Daly 
 %%%                        and Arthur Ogawa's merlin.mbs".
 %%%
-%%%     	Usage: The preamble of the .tex document has to contain at least:
+%%%     Usage: The preamble of the .tex document has to contain at least:
 %%% 
 %%%     \usepackage[]{natbib}
 %%%     \bibpunct[, ]{(}{)}{;}{a}{}{,}
