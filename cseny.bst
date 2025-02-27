@@ -1,7 +1,7 @@
 %%% ====================================================================
 %%%  @BibTeX-style-file{
 %%%     author          = "David Lamkin",
-%%%     version         = "B.03",
+%%%     version         = "B.04",
 %%%     date            = "2025",
 %%%     filename        = "cseny.bst",
 %%%     address         = "",
@@ -36,11 +36,11 @@
 %%%  }
 %%% ====================================================================
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% BibTeX `cseny' bibliography style (22-Feb-25 version)
+% BibTeX `cseny' bibliography style (27-Feb-25 version)
 % Adapted from the `cbe' style, version 0.99a; for BibTeX version 0.99a.
 % Copyright (C) 2025, All rights reserved.
 % Copying of this file is allowed, provided that if you make any changes at all
-% you name it something other than `cseny.bst'.
+% you name it something other than `cseny.bst', `csecn.bst' or `csecs.bst'.
 % This restriction helps ensure that all copies are identical.
 %
 % This style should be used with the `natbib' LaTeX style (natbib.sty).
@@ -63,7 +63,7 @@
 %   24-jan-88   (OP) Updated for BibTeX version 0.99a, from alpha.bst 0.99a;
 %               apalike now sorts by author, then year, then title;
 %               THIS `apalike' VERSION DOES NOT WORK WITH BIBTEX 0.98i.
-%   22-feb-25   Updated for CSE name-year (9th edition), for BibTeX 0.99d;
+%   27-feb-25   Updated for CSE name-year (9th edition), for BibTeX 0.99d;
 %               cseny sorts by author, then year, then month (where a
 %               month is present in the BibTeX database), then title.
 
@@ -157,7 +157,7 @@ FUNCTION {output.year.month.check}
 % misc, newspaper, patent, presentation, techreport, unpublished
 %
 { year empty$
-    { "empty year in " cite$ * warning$ }
+    { "empty year in " cite$ * "; no date information output" * warning$ }
     { write$
       ". " year * extra.label *
       month empty$
@@ -252,20 +252,6 @@ FUNCTION {field.or.null}
     'skip$
   if$
 }
-
-%FUNCTION {emphasize} % not used
-%{ duplicate$ empty$
-%    { pop$ "" }
-%    { "{\em " swap$ * "}" * }
-%  if$
-%}
-
-%FUNCTION {smallcaps} % not used
-%{ duplicate$ empty$
-%    { pop$ "" }
-%    { "{\sc " swap$ * "}" * }
-%  if$
-%}
 
 FUNCTION {capitalize}
 { "u" change.case$ "t" change.case$ }
@@ -596,8 +582,7 @@ FUNCTION {n.dashify}
 }
 
 FUNCTION {word.in}
-{ bbl.in capitalize
-  ": " * }
+{ bbl.in capitalize ": " * }
 
 FUNCTION {format.date}
 { year "year" bibinfo.check duplicate$ empty$
@@ -851,7 +836,7 @@ FUNCTION {format.journal.eid}
 FUNCTION {format.vol.num} % replaces {format.vol.num.pages}
 %
 % Renamed as {format.vol.num} since it doesn't include pages
-% We can still have a newspaper.pages equivalent if needed...
+% We can still have a newspaper.pages equivalent...
 %
 { volume field.or.null
   duplicate$ empty$ 'skip$
@@ -1027,7 +1012,7 @@ FUNCTION {article}
   format.authors "author" output.check
   author format.key output
   format.date "year" output.check
-  new.block	
+  new.block
   format.title "title" output.check
   new.block	
   crossref missing$
@@ -1291,8 +1276,7 @@ FUNCTION {newspaper}
 
 FUNCTION {patent}
 %
-% Requires inventor, assignee and number fields 
-% and a key in .bib
+% Requires inventor, assignee and number fields and a key in .bib
 %
 { output.bibitem
   format.inventors "inventor" output.check
@@ -1647,10 +1631,10 @@ FUNCTION {presort}
   *
   "    "
   *
-  month field.or.null            % sort on
-  *                              % month if
-  "    "                         % given, for
-  *                              % CSE name-year style
+  month field.or.null        % sort on
+  *                          % month if
+  "    "                     % given, for
+  *                          % CSE name-year style
   title field.or.null
   sort.format.title
   *
@@ -1689,8 +1673,14 @@ FUNCTION {reverse.pass}
     { "a" 'extra.label := }
     'skip$
   if$
-  label extra.label * ")" * 'label :=
   extra.label 'next.extra :=
+  extra.label
+  duplicate$ empty$
+    'skip$
+    { "{\natexlab{" swap$ * "}}" * }
+  if$
+  'extra.label :=
+  label extra.label * ")" * 'label :=
 }
 
 EXECUTE {initialize.extra.label.stuff}
@@ -1703,9 +1693,6 @@ REVERSE {reverse.pass}
 %			on sort.label then year (then month) then title.
 %			This is	for the second sorting pass.
 FUNCTION {bib.sort.order}
-%
-% Amended to sort by month as applicable: author, year, (month), title
-%
 { sort.label
   "    "
   *
@@ -1713,10 +1700,10 @@ FUNCTION {bib.sort.order}
   *
   "    "
   *
-  month field.or.null            % sort on 
-  *                              % month if
-  "    "                         % given, for
-  *                              % CSE name-year style
+  month field.or.null        % sort on 
+  *                          % month if
+  "    "                     % given, for
+  *                          % CSE name-year style
   title field.or.null
   sort.format.title
   *
@@ -1734,6 +1721,8 @@ FUNCTION {begin.bib}
     { preamble$ write$ newline$ }
   if$
   "\begin{thebibliography}{}" 
+  write$ newline$
+  "\providecommand{\natexlab}[1]{#1}"	
   write$ newline$
   "\providecommand{\url}[1]{\normalfont{#1}}"
   write$ newline$
