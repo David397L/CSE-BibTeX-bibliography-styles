@@ -1499,9 +1499,9 @@ FUNCTION {format.lab.names}
     { #2 <
 	'skip$
 	{ s #2 "{ff }{vv }{ll}{ jj}" format.name$ "others" =
-		{ " " * bbl.etal * }
-		{ bbl.and space.word * s #2 "{vv~}{ll}" format.name$ * }
-	  if$
+	    { " " * bbl.etal * }
+	    { bbl.and space.word * s #2 "{vv~}{ll}" format.name$ * }
+	if$
 	}
       if$
     }
