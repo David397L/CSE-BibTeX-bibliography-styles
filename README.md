@@ -6,4 +6,6 @@ cseny.bst is a BibTeX bibliography style for the Council of Science Editors (CSE
 The initial development goal is to match as closely as possible the description of the style given at
 https://www.csemanual.org/Tools/CSE-Citation-Quick-Guide.html
 
-Coming soon: csecs.bst, the "citation-sequence" version
+This is the most recent edition of the CSE manual of style.
+
+Coming soon: csecs.bst, the "citation-sequence" version.
