@@ -16,7 +16,7 @@
 %%%                        and Patrick W. Daly and Arthur Ogawa's 
 %%%                        merlin.mbs".
 %%%
-%%%     	Usage: The preamble of the .tex document has to contain at least:
+%%%     Usage: The preamble of the .tex document has to contain at least:
 %%% 
 %%%     \usepackage[numbers,sort&compress]{natbib} % and EITHER
 %%%     \bibpunct[, ]{[}{]}{,}{n}{}{,} % for numbers in square brackets OR
@@ -24,7 +24,7 @@
 %%%
 %%%     The inclusion of
 %%%
-%%%	    \usepackage{doi} 
+%%%     \usepackage{doi} 
 %%%     \renewcommand{\doitext}{https://doi.org/} 
 %%%
 %%%     (or equivalent) is also required in order to hyperlink DOI 
@@ -1494,12 +1494,12 @@ FUNCTION {format.lab.names}
   #2 >
     { pop$ " " * bbl.etal * }
     { #2 <
-		'skip$
-		{ s #2 "{ff }{vv }{ll}{ jj}" format.name$ "others" =
-		    { " " * bbl.etal * }
-			{ bbl.and space.word * s #2 "{vv~}{ll}" format.name$ * }
-	  	if$
-		}
+	'skip$
+        { s #2 "{ff }{vv }{ll}{ jj}" format.name$ "others" =
+            { " " * bbl.etal * }
+            { bbl.and space.word * s #2 "{vv~}{ll}" format.name$ * }
+        if$
+	}
       if$
     }
   if$
