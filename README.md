@@ -5,7 +5,7 @@ csecn.bst is a BibTeX bibliography style for the Council of Science Editors (CSE
 
 csecs.bst is a BibTeX bibliography style for the Council of Science Editors (CSE) citation-sequence (ninth edition) citation style.
 
-The initial development goal is to match as closely as possible the description of the style given at
+The initial development goal is for these files to match as closely as possible the description of the style given at
 https://www.csemanual.org/Tools/CSE-Citation-Quick-Guide.html
 
 This is the most recent (2024) edition of the CSE manual of style.
