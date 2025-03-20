@@ -1,23 +1,23 @@
 %%% ====================================================================
 %%%  @BibTeX-style-file{
 %%%     author          = "David Lamkin",
-%%%     version         = "B.04",
+%%%     version         = "B.06",
 %%%     date            = "2025",
 %%%     filename        = "cseny.bst",
 %%%     address         = "",
 %%%     checksum        = "",
 %%%     email           = "formatwithstyle@outlook.com",
 %%%     supported       = "yes",
-%%%     docstring       = "The file produces bibliographies more or
-%%%                        less in the Council of Science Editors
-%%%                        (CSE) name-year (ninth edition) format. 
+%%%     abstract        = "The file produces bibliographies more or
+%%%                        less in the Council of Science Editors (CSE) 
+%%%                        name-year (ninth edition) format. 
 %%%                        It was adapted from Alan Rogers' cbe.bst,
 %%%                        incorporating features of Patrick W. Daly 
 %%%                        and Arthur Ogawa's merlin.mbs".
 %%%
 %%%     Usage: The preamble of the .tex document has to contain at least:
 %%% 
-%%%     \usepackage[]{natbib}
+%%%     \usepackage[sort]{natbib}
 %%%     \bibpunct[, ]{(}{)}{;}{a}{}{,}
 %%%     \newcommand{\nummonth}[1]{\ifcase #1\or Jan\or Feb\or Mar\or Apr\or 
 %%%        May\or Jun\or Jul\or Aug\or Sep\or Oct\or Nov\or Dec\else
@@ -36,8 +36,8 @@
 %%%  }
 %%% ====================================================================
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% BibTeX `cseny' bibliography style (27-Feb-25 version)
-% Adapted from the `cbe' style, version 0.99a; for BibTeX version 0.99a.
+% BibTeX `cseny' bibliography style (20-Mar-25 version)
+% An adaptation of the `apalike' style, for use with the natbib package.
 % Copyright (C) 2025, All rights reserved.
 % Copying of this file is allowed, provided that if you make any changes at all
 % you name it something other than `cseny.bst', `csecn.bst' or `csecs.bst'.
@@ -63,7 +63,7 @@
 %   24-jan-88   (OP) Updated for BibTeX version 0.99a, from alpha.bst 0.99a;
 %               apalike now sorts by author, then year, then title;
 %               THIS `apalike' VERSION DOES NOT WORK WITH BIBTEX 0.98i.
-%   27-feb-25   Updated for CSE name-year (9th edition), for BibTeX 0.99d;
+%   20-mar-25   Updated for CSE name-year (9th edition), for BibTeX 0.99d;
 %               cseny sorts by author, then year, then month (where a
 %               month is present in the BibTeX database), then title.
 
@@ -154,7 +154,7 @@ FUNCTION {output.check}
 FUNCTION {output.year.month.check}
 %
 % For functions where a month might need to appear with the date:
-% misc, newspaper, patent, presentation, techreport, unpublished
+% misc, newspaper, patent, techreport, unpublished
 %
 { year empty$
     { "empty year in " cite$ * "; no date information output" * warning$ }
@@ -162,7 +162,7 @@ FUNCTION {output.year.month.check}
       ". " year * extra.label *
       month empty$
       { "" * }
-      { " " * month * "" * }
+      { " " * month * }
       if$
       mid.sentence 'output.state :=
     }
@@ -860,7 +860,7 @@ FUNCTION {format.chapter.pages}
 { chapter empty$
     { "" }
     { type empty$
-	{ bbl.chapter capitalize }  %  { "chapter" }
+	{ bbl.chapter capitalize }
 	{ type "l" change.case$ }
       if$
       chapter tie.or.space.connect
@@ -978,7 +978,7 @@ FUNCTION {format.incoll.inproc.crossref}
 
 FUNCTION {format.conference.address} 
 %
-% For use in {inproceedings}, {presentation} and {proceedings}
+% For use in {inproceedings} and {proceedings}
 %
 { address "address" bibinfo.check
 }
@@ -1062,6 +1062,7 @@ FUNCTION {book}
       format.book.crossref output.nonnull
     }
   if$
+  new.sentence
   format.number.series output
   new.sentence
   note output
@@ -1137,11 +1138,12 @@ FUNCTION {incollection}
   new.block
   crossref missing$
     { format.in.ed.booktitle "booktitle" output.check
+      new.sentence
+      format.edition output
       format.bvolume output
       format.chapter.pages output
       new.sentence
       publisher "publisher" output.check
-      format.edition output
     }
     { format.incoll.inproc.crossref output.nonnull
       format.chapter.pages output
@@ -1176,10 +1178,10 @@ FUNCTION {inproceedings}
     { format.incoll.inproc.crossref output.nonnull
     }
   if$
-  new.sentence
   format.pages "pages" output.check
   new.sentence
   format.number.series output
+  new.sentence
   note output
   new.sentence
   format.doi.or.url output
@@ -1311,23 +1313,6 @@ FUNCTION {phdthesis}
   fin.entry
 }
 
-FUNCTION {presentation}
-{ output.bibitem
-  format.authors "author" output.check
-  author format.key output
-  output.year.month.check
-  new.block
-  format.title output
-  new.sentence
-  organization output
-  format.conference.address output
-  new.sentence
-  note output
-  new.sentence
-  format.doi.or.url output
-  fin.entry
-}
-
 FUNCTION {proceedings}
 { output.bibitem
   format.editors output
@@ -1384,7 +1369,7 @@ FUNCTION {unpublished}
 
 FUNCTION {default.type} { misc }
 
-% The standard "month" macros have been redefined so that 
+% The standard "month" macros are redefined so that 
 % they can be sorted in chronological order.
 
 MACRO {jan} {"{\nummonth{01}}"}  %  {"Jan"}
@@ -1602,15 +1587,7 @@ FUNCTION {editor.sort}
   if$
 }
 
-%			cseny uses two sorting passes; the first one sets the
-%			labels so that the `a's, `b's, etc. can be computed;
-%			the second pass puts the references in "correct" order.
-%			The presort function is for the first pass. It computes
-%			label, sort.label, (month) and title, and then concatenates.
 FUNCTION {presort}
-%
-% Amended to sort by month as applicable: author, year, (month), title
-%
 { calc.label
   label sortify
   "    "
@@ -1689,9 +1666,6 @@ ITERATE {forward.pass}
 
 REVERSE {reverse.pass}
 
-%			Now that the label is right we sort for real,
-%			on sort.label then year (then month) then title.
-%			This is	for the second sorting pass.
 FUNCTION {bib.sort.order}
 { sort.label
   "    "

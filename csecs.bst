@@ -1,9 +1,9 @@
 %%% ====================================================================
 %%%  @BibTeX-style-file{
 %%%     author          = "David Lamkin",
-%%%     version         = "B.04",
+%%%     version         = "B.03",
 %%%     date            = "2025",
-%%%     filename        = "csecn.bst",
+%%%     filename        = "csecs.bst",
 %%%     address         = "",
 %%%     checksum        = "",
 %%%     email           = "formatwithstyle@outlook.com",
@@ -11,7 +11,7 @@
 %%%     abstract        = "The file produces bibliographies more or
 %%%                        less in the Council of Science Editors (CSE)
 %%%                        citation-name (ninth edition) format. It 
-%%%                        was adapted from Patrick W. Daly's plainnat.bst,
+%%%                        was adapted from Patrick W. Daly's unsrtnat.bst,
 %%%                        incorporating features of Alan Rogers' cbe.bst
 %%%                        and Patrick W. Daly and Arthur Ogawa's 
 %%%                        merlin.mbs".
@@ -42,8 +42,8 @@
 %%%  }
 %%% ====================================================================
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% BibTeX `csecn' bibliography style (20-Mar-25 version)
-% An adaptation of the `plainnat' style, for use with the natbib package.
+% BibTeX `csecs' bibliography style (20-Mar-25 version)
+% An adaptation of the `unsrt' style, for use with the natbib package.
 % Copyright (C) 2025, All rights reserved.
 % Copying of this file is allowed, provided that if you make any changes at all
 % you name it something other than `csecn.bst', `csecs.bst' or `cseny.bst'.
@@ -68,8 +68,8 @@
 %   24-jan-88   (OP) Updated for BibTeX version 0.99a, from alpha.bst 0.99a;
 %               apalike now sorts by author, then year, then title;
 %               THIS `apalike' VERSION DOES NOT WORK WITH BIBTEX 0.98i.
-%   20-mar-25   Updated for CSE citation-name (9th edition), for BibTeX 0.99d;
-%               csecn sorts by author, then title.
+%   20-mar-25   Updated for CSE citation-sequence (9th edition), for 
+%               BibTeX 0.99d; sorting is by citation sequence or key
 
 ENTRY
   { address
@@ -929,7 +929,7 @@ FUNCTION {format.in.ed.booktitle}
 }
 
 FUNCTION {format.in.ed.proctitle}
-{ format.proctitle duplicate$ empty$ 'skip$
+{ format.proctitle duplicate$ empty$	'skip$
     { editor "editor" format.editor.names duplicate$ empty$ 'pop$
         { ", " *
           get.bbl.editor
@@ -1586,101 +1586,16 @@ FUNCTION {calc.label}
   'label :=
 }
 
-FUNCTION {sort.format.names}
-{ 's :=
-  #1 'nameptr :=
-  ""
-  s num.names$ 'numnames :=
-  numnames 'namesleft :=
-    { namesleft #0 > }
-    { nameptr #1 >
-	{ "   " * }
-	'skip$
-      if$	
-      s nameptr "{vv{ } }{ll{ }}{  ff{ }}{  jj{ }}" format.name$ 't := 
-      nameptr numnames = t "others" = and
-	{ bbl.etal * }
-	{ t sortify * }
-      if$
-      nameptr #1 + 'nameptr :=
-      namesleft #1 - 'namesleft :=
-    }
-  while$
-}
+INTEGERS { seq.num }
 
-FUNCTION {sort.format.title}
-{ 't :=
-  "A " #2
-    "An " #3
-      "The " #4 t chop.word
-    chop.word
-  chop.word
-  sortify
-  #1 global.max$ substring$
-}
+FUNCTION {init.seq}
+{ #0 'seq.num :=}
 
-FUNCTION {author.sort}
-{ author empty$
-    { key empty$
-	{ "to sort, need author or key in " cite$ * warning$
-	  ""
-	}
-	{ key sortify }
-      if$
-    }
-    { author sort.format.names }
-  if$
-}
+EXECUTE {init.seq}
 
-FUNCTION {author.editor.sort}
-{ author empty$
-    { editor empty$
-	{ key empty$
-	    { "to sort, need author, editor, or key in " cite$ * warning$
-	      ""
-	    }
-	    { key sortify }
-	  if$
-	}
-	{ editor sort.format.names }
-      if$
-    }
-    { author sort.format.names }
-  if$
-}
-
-FUNCTION {author.organization.sort}
-{ author empty$
-    { organization empty$
-        { key empty$
-            { "to sort, need author, organization, or key in " cite$ * warning$
-              ""
-            }
-            { key sortify }
-          if$
-        }
-        { "The " #4 organization chop.word sortify }
-      if$
-    }
-    { author sort.format.names }
-  if$
-}
-
-FUNCTION {editor.organization.sort}
-{ editor empty$
-    { organization empty$
-        { key empty$
-            { "to sort, need editor, organization, or key in " cite$ * warning$
-              ""
-            }
-            { key sortify }
-          if$
-        }
-        { "The " #4 organization chop.word sortify }
-      if$
-    }
-    { editor sort.format.names }
-  if$
+FUNCTION {int.to.fix}
+{ "000000000" swap$ int.to.str$ *
+  #-1 #10 substring$
 }
 
 FUNCTION {presort}
@@ -1688,29 +1603,10 @@ FUNCTION {presort}
   label sortify
   "    "
   *
-  type$ "book" =
-  type$ "inbook" =
-  or
-    'author.editor.sort
-    { type$ "proceedings" =
-        'editor.organization.sort
-        { type$ "manual" =
-            'author.organization.sort
-            'author.sort
-          if$
-        }
-      if$
-    }
-  if$
-  #1 entry.max$ substring$
-  'sort.label :=	
-  sort.label	
-  *
-  "    "
-  *
-  title field.or.null
-  sort.format.title
-  *
+  seq.num #1 + 'seq.num :=
+  seq.num  int.to.fix
+  'sort.label :=
+  sort.label *
   #1 entry.max$ substring$
   'sort.key$ :=
 }
@@ -1767,19 +1663,12 @@ ITERATE {forward.pass}
 REVERSE {reverse.pass}
 
 FUNCTION {bib.sort.order}
-{ sort.label
-  "    "
-  *
-  title field.or.null
-  sort.format.title
-  *
-  #1 entry.max$ substring$
-  'sort.key$ :=
+{ sort.label  'sort.key$ :=
 }
 
 ITERATE {bib.sort.order}
 
-SORT		% by sort.label, title = final bibliography order
+SORT	
 
 FUNCTION {begin.bib}
 {   preamble$ empty$
