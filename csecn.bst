@@ -24,7 +24,7 @@
 %%%
 %%%     The inclusion of
 %%%
-%%%	    \usepackage{doi} 
+%%%     \usepackage{doi} 
 %%%     \renewcommand{\doitext}{https://doi.org/} 
 %%%
 %%%     (or equivalent) is also required in order to hyperlink DOI 
