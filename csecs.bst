@@ -1,7 +1,7 @@
 %%% ====================================================================
 %%%  @BibTeX-style-file{
 %%%     author          = "David Lamkin",
-%%%     version         = "B.03",
+%%%     version         = "B.04",
 %%%     date            = "2025",
 %%%     filename        = "csecs.bst",
 %%%     address         = "",
@@ -17,14 +17,14 @@
 %%%                        merlin.mbs".
 %%%
 %%%     Usage: The preamble of the .tex document has to contain at least:
-%%% 
+%%%
 %%%     \usepackage[numbers,sort&compress]{natbib} % and EITHER
 %%%     \bibpunct[, ]{[}{]}{,}{n}{}{,} % for numbers in square brackets OR
 %%%     \bibpunct[, ]{}{}{,}{s}{}{,} % for superscript numbers
 %%%
 %%%     The inclusion of
 %%%
-%%%     \usepackage{doi} 
+%%%	    \usepackage{doi} 
 %%%     \renewcommand{\doitext}{https://doi.org/} 
 %%%
 %%%     (or equivalent) is also required in order to hyperlink DOI 
@@ -42,8 +42,8 @@
 %%%  }
 %%% ====================================================================
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% BibTeX `csecs' bibliography style (20-Mar-25 version)
-% An adaptation of the `unsrt' style, for use with the natbib package.
+% BibTeX `csecs' bibliography style (09-Apr-25 version)
+% An adaptation of the `unsrtnat' style, for use with the natbib package.
 % Copyright (C) 2025, All rights reserved.
 % Copying of this file is allowed, provided that if you make any changes at all
 % you name it something other than `csecn.bst', `csecs.bst' or `cseny.bst'.
@@ -68,7 +68,7 @@
 %   24-jan-88   (OP) Updated for BibTeX version 0.99a, from alpha.bst 0.99a;
 %               apalike now sorts by author, then year, then title;
 %               THIS `apalike' VERSION DOES NOT WORK WITH BIBTEX 0.98i.
-%   20-mar-25   Updated for CSE citation-sequence (9th edition), for 
+%   09-apr-25   Updated for CSE citation-sequence (9th edition), for 
 %               BibTeX 0.99d; sorting is by citation sequence or key
 
 ENTRY
@@ -124,15 +124,15 @@ FUNCTION {output.nonnull}
   output.state mid.sentence =
     { "; " * write$ }
     { output.state after.block =
-	{ add.period$ write$
-	  newline$
-	  "\newblock " write$
-	}
-	{ output.state before.all =
-	    'write$
-	    { add.period$ " " * write$ }
-	  if$
-	}
+        { add.period$ write$
+          newline$
+          "\newblock " write$
+        }
+        { output.state before.all =
+            'write$
+            { add.period$ " " * write$ }
+          if$
+        }
       if$
       mid.sentence 'output.state :=
     }
@@ -172,8 +172,8 @@ FUNCTION {new.sentence}
 { output.state after.block =
     'skip$
     { output.state before.all =
-	'skip$
-	{ after.sentence 'output.state := }
+        'skip$
+        { after.sentence 'output.state := }
       if$
     }
   if$
@@ -257,7 +257,6 @@ FUNCTION {space.word}
 
 % Here are the language-specific definitions for explicit words.
 % Each function has a name bbl.xxx where xxx is the English word.
-% The language selected here is ENGLISH
 
 FUNCTION {bbl.and}
 { "and" }
@@ -287,7 +286,7 @@ FUNCTION {bbl.edition}
 { "ed" }	
 
 FUNCTION {bbl.volume}
-{ "vol." }
+{ "vol" }
 
 FUNCTION {bbl.of}
 { "of" }
@@ -494,10 +493,13 @@ FUNCTION {get.bbl.inventor} % special for @patent
 { inventor num.names$ #1 > 'bbl.inventors 'bbl.inventor if$ }
 
 FUNCTION {format.editors}
-{ editor "editor" format.names duplicate$ empty$ 'skip$
-    {
-      ", " *
-      get.bbl.editor *
+{ editor empty$
+    { "" }
+    { editor "editor" format.names
+      editor num.names$ #1 >
+        { ", " * bbl.editors * }
+        { ", " * bbl.editor * }
+      if$
     }
   if$
 }
@@ -557,21 +559,21 @@ FUNCTION {n.dashify}
   ""
     { t empty$ not }
     { t #1 #1 substring$ "-" =
-	{ t #1 #2 substring$ "--" = not
-	    { "--" *
-	      t #2 global.max$ substring$ 't :=
-	    }
-	    {   { t #1 #1 substring$ "-" = }
-		{ "-" *
-		  t #2 global.max$ substring$ 't :=
-		}
-	      while$
-	    }
-	  if$
-	}
-	{ t #1 #1 substring$ *
-	  t #2 global.max$ substring$ 't :=
-	}
+        { t #1 #2 substring$ "--" = not
+            { "--" *
+              t #2 global.max$ substring$ 't :=
+            }
+            {   { t #1 #1 substring$ "-" = }
+                { "-" *
+                  t #2 global.max$ substring$ 't :=
+                }
+              while$
+            }
+          if$
+        }
+        { t #1 #1 substring$ *
+          t #2 global.max$ substring$ 't :=
+        }
       if$
     }
   while$
@@ -785,8 +787,8 @@ FUNCTION {multi.page.check}
       swap$ duplicate$ "," =
       swap$ "+" =
       or or
-		{ #1 'multiresult := }
-		{ t #2 global.max$ substring$ 't := }
+        { #1 'multiresult := }
+        { t #2 global.max$ substring$ 't := }
       if$
     }
   while$
@@ -797,8 +799,8 @@ FUNCTION {format.pages}
 { pages empty$
     { "" }
     { pages multi.page.check
-		{ bbl.pages pages n.dashify tie.or.space.connect }
-		{ bbl.page pages tie.or.space.connect }
+        { bbl.pages pages n.dashify tie.or.space.connect }
+        { bbl.page pages tie.or.space.connect }
       if$
     }
   if$
@@ -885,8 +887,8 @@ FUNCTION {format.chapter.pages}
 { chapter empty$
     { "" }
     { type empty$
-		{ bbl.chapter capitalize }
-		{ type "l" change.case$ }
+        { bbl.chapter capitalize }
+        { type "l" change.case$ }
       if$
       chapter tie.or.space.connect
     }
@@ -1494,12 +1496,12 @@ FUNCTION {format.lab.names}
   #2 >
     { pop$ " " * bbl.etal * }
     { #2 <
-	'skip$
+        'skip$
         { s #2 "{ff }{vv }{ll}{ jj}" format.name$ "others" =
             { " " * bbl.etal * }
             { bbl.and space.word * s #2 "{vv~}{ll}" format.name$ * }
-        if$
-	}
+          if$
+        }
       if$
     }
   if$
@@ -1579,10 +1581,10 @@ FUNCTION {calc.label}
   "("
   *
   year duplicate$ empty$
-     { pop$ "{????}" }
-     'skip$
+    { pop$ "{????}" }
+    'skip$
   if$
-  *                   % the matching closing ")" comes in at reverse.pass
+  *                 % the matching closing ")" comes in at reverse.pass
   'label :=
 }
 
@@ -1671,7 +1673,7 @@ ITERATE {bib.sort.order}
 SORT	
 
 FUNCTION {begin.bib}
-{   preamble$ empty$
+{ preamble$ empty$
     'skip$
     { preamble$ write$ newline$ }
   if$

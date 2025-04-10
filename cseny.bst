@@ -1,7 +1,7 @@
 %%% ====================================================================
 %%%  @BibTeX-style-file{
 %%%     author          = "David Lamkin",
-%%%     version         = "B.06",
+%%%     version         = "B.07",
 %%%     date            = "2025",
 %%%     filename        = "cseny.bst",
 %%%     address         = "",
@@ -36,7 +36,7 @@
 %%%  }
 %%% ====================================================================
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% BibTeX `cseny' bibliography style (20-Mar-25 version)
+% BibTeX `cseny' bibliography style (09-Apr-25 version)
 % An adaptation of the `apalike' style, for use with the natbib package.
 % Copyright (C) 2025, All rights reserved.
 % Copying of this file is allowed, provided that if you make any changes at all
@@ -63,7 +63,7 @@
 %   24-jan-88   (OP) Updated for BibTeX version 0.99a, from alpha.bst 0.99a;
 %               apalike now sorts by author, then year, then title;
 %               THIS `apalike' VERSION DOES NOT WORK WITH BIBTEX 0.98i.
-%   20-mar-25   Updated for CSE name-year (9th edition), for BibTeX 0.99d;
+%   09-apr-25   Updated for CSE name-year (9th edition), for BibTeX 0.99d;
 %               cseny sorts by author, then year, then month (where a
 %               month is present in the BibTeX database), then title.
 
@@ -120,15 +120,15 @@ FUNCTION {output.nonnull}
   output.state mid.sentence =
     { "; " * write$ }
     { output.state after.block =
-	{ add.period$ write$
-	  newline$
-	  "\newblock " write$
-	}
-	{ output.state before.all =
-	    'write$
-	    { add.period$ " " * write$ }
-	  if$
-	}
+        { add.period$ write$
+          newline$
+          "\newblock " write$
+        }
+        { output.state before.all =
+            'write$
+            { add.period$ " " * write$ }
+          if$
+        }
       if$
       mid.sentence 'output.state :=
     }
@@ -153,7 +153,7 @@ FUNCTION {output.check}
 
 FUNCTION {output.year.month.check}
 %
-% For functions where a month might need to appear with the date:
+% For functions where a month might need to appear in the date:
 % misc, newspaper, patent, techreport, unpublished
 %
 { year empty$
@@ -186,8 +186,8 @@ FUNCTION {new.sentence}
 { output.state after.block =
     'skip$
     { output.state before.all =
-	'skip$
-	{ after.sentence 'output.state := }
+        'skip$
+        { after.sentence 'output.state := }
       if$
     }
   if$
@@ -261,7 +261,6 @@ FUNCTION {space.word}
 
 % Here are the language-specific definitions for explicit words.
 % Each function has a name bbl.xxx where xxx is the English word.
-% The language selected here is ENGLISH
 
 FUNCTION {bbl.and}
 { "and" }
@@ -291,7 +290,7 @@ FUNCTION {bbl.edition}
 { "ed" }	
 
 FUNCTION {bbl.volume}
-{ "vol." }
+{ "vol" }
 
 FUNCTION {bbl.of}
 { "of" }
@@ -498,10 +497,13 @@ FUNCTION {get.bbl.inventor} % special for @patent
 { inventor num.names$ #1 > 'bbl.inventors 'bbl.inventor if$ }
 
 FUNCTION {format.editors}
-{ editor "editor" format.names duplicate$ empty$ 'skip$
-    {
-      ", " *
-      get.bbl.editor *
+{ editor empty$
+    { "" }
+    { editor "editor" format.names
+      editor num.names$ #1 >
+        { ", " * bbl.editors * }
+        { ", " * bbl.editor * }
+      if$
     }
   if$
 }
@@ -561,21 +563,21 @@ FUNCTION {n.dashify}
   ""
     { t empty$ not }
     { t #1 #1 substring$ "-" =
-	{ t #1 #2 substring$ "--" = not
-	    { "--" *
-	      t #2 global.max$ substring$ 't :=
-	    }
-	    {   { t #1 #1 substring$ "-" = }
-		{ "-" *
-		  t #2 global.max$ substring$ 't :=
-		}
-	      while$
-	    }
-	  if$
-	}
-	{ t #1 #1 substring$ *
-	  t #2 global.max$ substring$ 't :=
-	}
+        { t #1 #2 substring$ "--" = not
+            { "--" *
+              t #2 global.max$ substring$ 't :=
+            }
+            {   { t #1 #1 substring$ "-" = }
+                { "-" *
+                  t #2 global.max$ substring$ 't :=
+                }
+              while$
+            }
+          if$
+        }
+        { t #1 #1 substring$ *
+          t #2 global.max$ substring$ 't :=
+        }
       if$
     }
   while$
@@ -760,8 +762,8 @@ FUNCTION {multi.page.check}
       swap$ duplicate$ "," =
       swap$ "+" =
       or or
-	{ #1 'multiresult := }
-	{ t #2 global.max$ substring$ 't := }
+        { #1 'multiresult := }
+        { t #2 global.max$ substring$ 't := }
       if$
     }
   while$
@@ -772,8 +774,8 @@ FUNCTION {format.pages}
 { pages empty$
     { "" }
     { pages multi.page.check
-	{ bbl.pages pages n.dashify tie.or.space.connect }
-	{ bbl.page pages tie.or.space.connect }
+        { bbl.pages pages n.dashify tie.or.space.connect }
+        { bbl.page pages tie.or.space.connect }
       if$
     }
   if$
@@ -835,7 +837,7 @@ FUNCTION {format.journal.eid}
 
 FUNCTION {format.vol.num} % replaces {format.vol.num.pages}
 %
-% Renamed as {format.vol.num} since it doesn't include pages
+% Renamed as {format.vol.num} since it does not include pages
 % We can still have a newspaper.pages equivalent...
 %
 { volume field.or.null
@@ -860,8 +862,8 @@ FUNCTION {format.chapter.pages}
 { chapter empty$
     { "" }
     { type empty$
-	{ bbl.chapter capitalize }
-	{ type "l" change.case$ }
+        { bbl.chapter capitalize }
+        { type "l" change.case$ }
       if$
       chapter tie.or.space.connect
     }
@@ -891,8 +893,7 @@ FUNCTION {format.proctitle}
 
 FUNCTION {format.in.ed.booktitle}
 { format.booktitle duplicate$ empty$ 'skip$
-    {
-      editor "editor" format.editor.names duplicate$ empty$ 'pop$
+    { editor "editor" format.editor.names duplicate$ empty$ 'pop$
         { ", " *
           get.bbl.editor
           ". " *
@@ -906,8 +907,7 @@ FUNCTION {format.in.ed.booktitle}
 
 FUNCTION {format.in.ed.proctitle}
 { format.proctitle duplicate$ empty$ 'skip$
-    {
-      editor "editor" format.editor.names duplicate$ empty$ 'pop$
+    { editor "editor" format.editor.names duplicate$ empty$ 'pop$
         { ", " *
           get.bbl.editor
           ". " *
@@ -1442,12 +1442,12 @@ FUNCTION {format.lab.names}
   #2 >
     { pop$ " " * bbl.etal * }
     { #2 <
-	'skip$
-	{ s #2 "{ff }{vv }{ll}{ jj}" format.name$ "others" =
-	    { " " * bbl.etal * }
+        'skip$
+        { s #2 "{ff }{vv }{ll}{ jj}" format.name$ "others" =
+            { " " * bbl.etal * }
             { bbl.and space.word * s #2 "{vv~}{ll}" format.name$ * }
-	  if$
-	}
+          if$
+        }
       if$
     }
   if$
@@ -1456,8 +1456,8 @@ FUNCTION {format.lab.names}
 FUNCTION {author.key.label}
 { author empty$
     { key empty$
-	{ cite$ #1 #3 substring$ }
-	'key	
+        { cite$ #1 #3 substring$ }
+        'key	
       if$
     }
     { author format.lab.names }
@@ -1467,12 +1467,12 @@ FUNCTION {author.key.label}
 FUNCTION {author.editor.key.label}
 { author empty$
     { editor empty$
-	{ key empty$
-	    { cite$ #1 #3 substring$ }
-	    'key	
-	  if$
-	}
-	{ editor format.lab.names }
+        { key empty$
+            { cite$ #1 #3 substring$ }
+            'key	
+          if$
+        }
+        { editor format.lab.names }
       if$
     }
     { author format.lab.names }
@@ -1482,8 +1482,8 @@ FUNCTION {author.editor.key.label}
 FUNCTION {editor.key.label}
 { editor empty$
     { key empty$
-	{ cite$ #1 #3 substring$ }
-	'key	
+        { cite$ #1 #3 substring$ }
+        'key	
       if$
     }
     { editor format.lab.names }
@@ -1504,10 +1504,10 @@ FUNCTION {calc.label}
   "("
   *
   year duplicate$ empty$
-     { pop$ "{[date unknown]}" }
-     'skip$
+    { pop$ "{[date unknown]}" }
+    'skip$
   if$
-  *                   % the matching closing ")" comes in at reverse.pass
+  *                 % the matching closing ")" comes in at reverse.pass
   'label :=
 }
 
@@ -1519,13 +1519,13 @@ FUNCTION {sort.format.names}
   numnames 'namesleft :=
     { namesleft #0 > }
     { nameptr #1 >
-	{ "   " * }
-	'skip$
+        { "   " * }
+        'skip$
       if$	
       s nameptr "{vv{ } }{ll{ }}{  ff{ }}{  jj{ }}" format.name$ 't := 
       nameptr numnames = t "others" = and
-	{ bbl.etal * }
-	{ t sortify * }
+        { bbl.etal * }
+        { t sortify * }
       if$
       nameptr #1 + 'nameptr :=
       namesleft #1 - 'namesleft :=
@@ -1547,10 +1547,10 @@ FUNCTION {sort.format.title}
 FUNCTION {author.sort}
 { author empty$
     { key empty$
-	{ "to sort, need author or key in " cite$ * warning$
-	  ""
-	}
-	{ key sortify }
+        { "to sort, need author or key in " cite$ * warning$
+          ""
+        }
+        { key sortify }
       if$
     }
     { author sort.format.names }
@@ -1560,14 +1560,14 @@ FUNCTION {author.sort}
 FUNCTION {author.editor.sort}
 { author empty$
     { editor empty$
-	{ key empty$
-	    { "to sort, need author, editor, or key in " cite$ * warning$
-	      ""
-	    }
-	    { key sortify }
-	  if$
-	}
-	{ editor sort.format.names }
+        { key empty$
+            { "to sort, need author, editor, or key in " cite$ * warning$
+              ""
+            }
+            { key sortify }
+            if$
+        }
+        { editor sort.format.names }
       if$
     }
     { author sort.format.names }
@@ -1577,10 +1577,10 @@ FUNCTION {author.editor.sort}
 FUNCTION {editor.sort}
 { editor empty$
     { key empty$
-	{ "to sort, need editor or key in " cite$ * warning$
-	  ""
-	}
-	{ key sortify }
+        { "to sort, need editor or key in " cite$ * warning$
+          ""
+        }
+        { key sortify }
       if$
     }
     { editor sort.format.names }
@@ -1597,8 +1597,8 @@ FUNCTION {presort}
   or
     'author.editor.sort
     { type$ "proceedings" =
-	'editor.sort
-	'author.sort
+        'editor.sort
+        'author.sort
       if$
     }
   if$
