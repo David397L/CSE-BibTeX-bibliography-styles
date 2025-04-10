@@ -1,9 +1,10 @@
 # bibliography-style-files
-cseny.bst is a BibTeX bibliography style for the Council of Science Editors (CSE) name-year (ninth edition) citation style.
 
 csecn.bst is a BibTeX bibliography style for the Council of Science Editors (CSE) citation-name (ninth edition) citation style.
 
 csecs.bst is a BibTeX bibliography style for the Council of Science Editors (CSE) citation-sequence (ninth edition) citation style.
+
+cseny.bst is a BibTeX bibliography style for the Council of Science Editors (CSE) name-year (ninth edition) citation style.
 
 The initial development goal is for these files to match as closely as possible the description of the style given at
 https://www.csemanual.org/Tools/CSE-Citation-Quick-Guide.html
