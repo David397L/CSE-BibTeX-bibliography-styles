@@ -1152,6 +1152,7 @@ FUNCTION {incollection}
   format.pages "pages" output.check
   new.sentence
   format.number.series output
+  new.sentence
   note output
   new.sentence
   format.doi.or.url output
