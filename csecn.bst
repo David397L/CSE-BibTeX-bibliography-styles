@@ -1,7 +1,7 @@
 %%% ====================================================================
 %%%  @BibTeX-style-file{
 %%%     author          = "David Lamkin",
-%%%     version         = "B.05",
+%%%     version         = "B.06",
 %%%     date            = "2025",
 %%%     filename        = "csecn.bst",
 %%%     address         = "",
@@ -24,7 +24,7 @@
 %%%
 %%%     The inclusion of
 %%%
-%%%     \usepackage{doi} 
+%%%	    \usepackage{doi} 
 %%%     \renewcommand{\doitext}{https://doi.org/} 
 %%%
 %%%     (or equivalent) is also required in order to hyperlink DOI 
@@ -42,7 +42,7 @@
 %%%  }
 %%% ====================================================================
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% BibTeX `csecn' bibliography style (09-Apr-25 version)
+% BibTeX `csecn' bibliography style (06-May-25 version)
 % An adaptation of the `plainnat' style, for use with the natbib package.
 % Copyright (C) 2025, All rights reserved.
 % Copying of this file is allowed, provided that if you make any changes at all
@@ -68,7 +68,7 @@
 %   24-jan-88   (OP) Updated for BibTeX version 0.99a, from alpha.bst 0.99a;
 %               apalike now sorts by author, then year, then title;
 %               THIS `apalike' VERSION DOES NOT WORK WITH BIBTEX 0.98i.
-%   09-apr-25   Updated for CSE citation-name (9th edition), for BibTeX 0.99d;
+%   06-may-25   Updated for CSE citation-name (9th edition), for BibTeX 0.99d;
 %               csecn sorts by author, then title.
 
 ENTRY
@@ -504,6 +504,39 @@ FUNCTION {format.editors}
   if$
 }
 
+FUNCTION {format.editors.primary}
+%
+% Editors in primary position in {book} and {inbook}
+% when there is no author.
+%
+{ editor "editor" format.names duplicate$ empty$ 'skip$
+    {
+      ", " *
+      get.bbl.editor *
+    }
+  if$
+}
+
+FUNCTION {format.editors.secondary}
+%
+% Editors in secondary position in {book} and {inbook}
+% when there is an author in primary position.
+%
+{ editor empty$
+    { "" }
+    { author empty$
+        { "" }
+        { editor "editor" format.names
+          editor num.names$ #1 >
+            { ", " * bbl.editors * }
+            { ", " * bbl.editor * }
+          if$
+        }
+      if$
+    }
+  if$
+}
+
 FUNCTION {format.inventors} % special for @patent
 { inventor "inventor" format.names duplicate$ empty$ 'skip$
     {
@@ -526,7 +559,7 @@ FUNCTION {urldate.check}
 { lastchecked empty$
     { urldate empty$
         { "" }
-    { " [accessed " urldate * "]" * add.period$ }
+        { " [accessed " urldate * "]" * add.period$ }
       if$
     }
     { " [accessed " lastchecked * "]" * add.period$ }
@@ -540,7 +573,7 @@ FUNCTION {format.doi.or.url}
 { doi empty$
     { url empty$
         { "" }
-    { urldate.check * "\url{" url * "}" * }
+        { urldate.check * "\url{" url * "}" * }
       if$
     }
     { "\doi{" doi * "}" * }
@@ -668,6 +701,17 @@ FUNCTION {either.or.check}
   if$
 }
 
+FUNCTION {either.or.both.check}
+%
+% Issues a warning (for information) when both author and editor
+% are used in {book} and {inbook}
+%
+{ empty$
+    'pop$
+    { "" swap$ * " fields both used in " * cite$ * warning$ }
+  if$
+}
+
 FUNCTION {format.bvolume}
 { volume empty$
     { "" }
@@ -686,18 +730,13 @@ FUNCTION {format.number.series}
 { volume empty$
     { number empty$
         { series field.or.null }
-        { series empty$
-            { number "number" bibinfo.check }
-            { output.state mid.sentence =	
-                { "" }
-                { "" }
-              if$
-              number "number" bibinfo.check *
-              series "series" bibinfo.check
-              duplicate$ empty$ 'pop$
-                { "(" swap$ * "; " * swap$ * ")" * }
-              if$
-            }
+        { output.state mid.sentence =
+            { "" }
+            { "" }
+          if$
+          series empty$
+            { "there's a number but no series in " cite$ * warning$ }
+            { "(" * series * "; " * number * ")" * }
           if$
         }
       if$
@@ -917,29 +956,23 @@ FUNCTION {format.proctitle}
 }
 
 FUNCTION {format.in.ed.booktitle}
-{ format.booktitle duplicate$ empty$ 'skip$
-    { editor "editor" format.editor.names duplicate$ empty$ 'pop$
-        { ", " *
-          get.bbl.editor
-          ". " *
-          * swap$
-          * }
+{ booktitle empty$
+    { "" }
+    { editor empty$
+        { word.in format.booktitle * }
+        { word.in format.editors * ". " * format.booktitle * }
       if$
-      word.in swap$ *
     }
   if$
 }
 
 FUNCTION {format.in.ed.proctitle}
-{ format.proctitle duplicate$ empty$ 'skip$
-    { editor "editor" format.editor.names duplicate$ empty$ 'pop$
-        { ", " *
-          get.bbl.editor
-          ". " *
-          * swap$
-          * }
+{ booktitle empty$
+    { "" }
+    { editor empty$
+        { word.in format.proctitle * }
+        { word.in format.editors * ". " * format.proctitle * }
       if$
-      word.in swap$ *
     }
   if$
 }
@@ -1103,12 +1136,12 @@ FUNCTION {article}
 FUNCTION {book}
 { output.bibitem
   author empty$
-    { format.editors "author and editor" output.check
+    { format.editors.primary "author and editor" output.check
       editor format.key output
     }
     { format.authors output.nonnull
       crossref missing$
-        { "author and editor" editor either.or.check }
+        { "author and editor" editor either.or.both.check }
         'skip$
       if$
     }
@@ -1119,6 +1152,8 @@ FUNCTION {book}
   crossref missing$
     { format.edition output
       format.bvolume output
+      new.sentence
+      format.editors.secondary output
       new.sentence
       publisher "publisher" output.check
     }
@@ -1156,12 +1191,12 @@ FUNCTION {booklet}
 FUNCTION {inbook}
 { output.bibitem
   author empty$
-    { format.editors "author and editor" output.check
+    { format.editors.primary "author and editor" output.check
       editor format.key output
     }
     { format.authors output.nonnull
       crossref missing$
-        { "author and editor" editor either.or.check }
+        { "author and editor" editor either.or.both.check }
         'skip$
       if$
     }
@@ -1172,6 +1207,8 @@ FUNCTION {inbook}
   crossref missing$
     { format.edition output
       format.bvolume output
+      new.sentence
+      format.editors.secondary output
       new.sentence
       publisher "publisher" output.check
       format.date "year" output.check
