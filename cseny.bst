@@ -1,7 +1,7 @@
 %%% ====================================================================
 %%%  @BibTeX-style-file{
 %%%     author          = "David Lamkin",
-%%%     version         = "B.08",
+%%%     version         = "B.09",
 %%%     date            = "2025",
 %%%     filename        = "cseny.bst",
 %%%     address         = "",
@@ -36,7 +36,7 @@
 %%%  }
 %%% ====================================================================
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% BibTeX `cseny' bibliography style (06-May-25 version)
+% BibTeX `cseny' bibliography style (08-May-25 version)
 % An adaptation of the `apalike' style, for use with the natbib package.
 % Copyright (C) 2025, All rights reserved.
 % Copying of this file is allowed, provided that if you make any changes at all
@@ -63,7 +63,7 @@
 %   24-jan-88   (OP) Updated for BibTeX version 0.99a, from alpha.bst 0.99a;
 %               apalike now sorts by author, then year, then title;
 %               THIS `apalike' VERSION DOES NOT WORK WITH BIBTEX 0.98i.
-%   06-may-25   Updated for CSE name-year (9th edition), for BibTeX 0.99d;
+%   08-may-25   Updated for CSE name-year (9th edition), for BibTeX 0.99d;
 %               cseny sorts by author, then year, then month (where a
 %               month is present in the BibTeX database), then title.
 
@@ -899,12 +899,16 @@ FUNCTION {format.vol.num} % replaces {format.vol.num.pages}
 
 FUNCTION {format.chapter.pages}
 { chapter empty$
-    { "" }
+    'format.pages
     { type empty$
         { bbl.chapter capitalize }
         { type "l" change.case$ }
       if$
       chapter tie.or.space.connect
+      pages empty$
+        'skip$
+        { "; " * format.pages * }
+      if$
     }
   if$
 }
@@ -1155,7 +1159,6 @@ FUNCTION {inbook}
       format.book.crossref output.nonnull
     }
   if$
-  format.pages "pages" output.check
   new.sentence
   format.number.series output
   new.sentence
@@ -1178,7 +1181,6 @@ FUNCTION {incollection}
       new.sentence
       format.edition output
       format.bvolume output
-      format.chapter.pages output
       new.sentence
       publisher "publisher" output.check
     }
@@ -1186,7 +1188,8 @@ FUNCTION {incollection}
       format.chapter.pages output
     }
   if$
-  format.pages "pages" output.check
+  new.sentence
+  format.chapter.pages output
   new.sentence
   format.number.series output
   new.sentence
