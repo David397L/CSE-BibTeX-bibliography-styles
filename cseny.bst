@@ -1,7 +1,7 @@
 %%% ====================================================================
 %%%  @BibTeX-style-file{
 %%%     author          = "David Lamkin",
-%%%     version         = "B.09",
+%%%     version         = "B.10",
 %%%     date            = "2025",
 %%%     filename        = "cseny.bst",
 %%%     address         = "",
@@ -36,7 +36,7 @@
 %%%  }
 %%% ====================================================================
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% BibTeX `cseny' bibliography style (08-May-25 version)
+% BibTeX `cseny' bibliography style (01-Jun-25 version)
 % An adaptation of the `apalike' style, for use with the natbib package.
 % Copyright (C) 2025, All rights reserved.
 % Copying of this file is allowed, provided that if you make any changes at all
@@ -63,7 +63,7 @@
 %   24-jan-88   (OP) Updated for BibTeX version 0.99a, from alpha.bst 0.99a;
 %               apalike now sorts by author, then year, then title;
 %               THIS `apalike' VERSION DOES NOT WORK WITH BIBTEX 0.98i.
-%   08-may-25   Updated for CSE name-year (9th edition), for BibTeX 0.99d;
+%   01-jun-25   Updated for CSE name-year (9th edition), for BibTeX 0.99d;
 %               cseny sorts by author, then year, then month (where a
 %               month is present in the BibTeX database), then title.
 
@@ -1096,13 +1096,13 @@ FUNCTION {book}
       format.editors.secondary output
       new.sentence
       publisher "publisher" output.check
+      new.sentence
+      format.number.series output
     }
     { new.block
       format.book.crossref output.nonnull
     }
   if$
-  new.sentence
-  format.number.series output
   new.sentence
   note output
   new.sentence
@@ -1183,15 +1183,15 @@ FUNCTION {incollection}
       format.bvolume output
       new.sentence
       publisher "publisher" output.check
+      new.sentence
+      format.chapter.pages output
+      new.sentence
+      format.number.series output
     }
     { format.incoll.inproc.crossref output.nonnull
       format.chapter.pages output
     }
   if$
-  new.sentence
-  format.chapter.pages output
-  new.sentence
-  format.number.series output
   new.sentence
   note output
   new.sentence
@@ -1215,13 +1215,14 @@ FUNCTION {inproceedings}
       new.sentence
       organization output
       publisher output
+      format.pages "pages" output.check
+      new.sentence
+      format.number.series output
     }
     { format.incoll.inproc.crossref output.nonnull
+      format.pages "pages" output.check
     }
   if$
-  format.pages "pages" output.check
-  new.sentence
-  format.number.series output
   new.sentence
   note output
   new.sentence

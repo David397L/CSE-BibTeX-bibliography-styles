@@ -1,7 +1,7 @@
 %%% ====================================================================
 %%%  @BibTeX-style-file{
 %%%     author          = "David Lamkin",
-%%%     version         = "B.06",
+%%%     version         = "B.07",
 %%%     date            = "2025",
 %%%     filename        = "csecs.bst",
 %%%     address         = "",
@@ -42,7 +42,7 @@
 %%%  }
 %%% ====================================================================
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% BibTeX `csecs' bibliography style (08-May-25 version)
+% BibTeX `csecs' bibliography style (01-Jun-25 version)
 % An adaptation of the `unsrtnat' style, for use with the natbib package.
 % Copyright (C) 2025, All rights reserved.
 % Copying of this file is allowed, provided that if you make any changes at all
@@ -68,7 +68,7 @@
 %   24-jan-88   (OP) Updated for BibTeX version 0.99a, from alpha.bst 0.99a;
 %               apalike now sorts by author, then year, then title;
 %               THIS `apalike' VERSION DOES NOT WORK WITH BIBTEX 0.98i.
-%   08-may-25   Updated for CSE citation-sequence (9th edition), for 
+%   01-jun-25   Updated for CSE citation-sequence (9th edition), for 
 %               BibTeX 0.99d; sorting is by citation sequence or key
 
 ENTRY
@@ -1247,16 +1247,16 @@ FUNCTION {incollection}
       format.bvolume output
       new.sentence
       publisher "publisher" output.check
+      format.date "year" output.check
+      new.sentence
+      format.chapter.pages output
+      new.sentence
+      format.number.series output
     }
     { format.incoll.inproc.crossref output.nonnull
       format.chapter.pages output
     }
   if$
-  format.date "year" output.check
-  new.sentence
-  format.chapter.pages output
-  new.sentence
-  format.number.series output
   new.sentence
   note output
   new.sentence
@@ -1279,15 +1279,16 @@ FUNCTION {inproceedings}
       new.sentence
       organization output
       publisher output
+      format.date "year" output.check
+      new.sentence
+      format.pages "pages" output.check
+      new.sentence
+      format.number.series output
     }
     { format.incoll.inproc.crossref output.nonnull
+      format.pages output
     }
   if$
-  format.date "year" output.check
-  new.sentence
-  format.pages "pages" output.check
-  new.sentence
-  format.number.series output
   new.sentence
   note output
   new.sentence
