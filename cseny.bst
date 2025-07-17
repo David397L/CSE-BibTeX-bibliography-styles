@@ -1,8 +1,8 @@
 %%% ====================================================================
 %%%  @BibTeX-style-file{
 %%%     author          = "David Lamkin",
-%%%     version         = "B.10",
-%%%     date            = "2025",
+%%%     version         = "B.11",
+%%%     date            = "17 July 2025",
 %%%     filename        = "cseny.bst",
 %%%     address         = "",
 %%%     checksum        = "",
@@ -36,7 +36,7 @@
 %%%  }
 %%% ====================================================================
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% BibTeX `cseny' bibliography style (01-Jun-25 version)
+% BibTeX `cseny' bibliography style (17-Jul-25 version)
 % An adaptation of the `apalike' style, for use with the natbib package.
 % Copyright (C) 2025, All rights reserved.
 % Copying of this file is allowed, provided that if you make any changes at all
@@ -63,14 +63,12 @@
 %   24-jan-88   (OP) Updated for BibTeX version 0.99a, from alpha.bst 0.99a;
 %               apalike now sorts by author, then year, then title;
 %               THIS `apalike' VERSION DOES NOT WORK WITH BIBTEX 0.98i.
-%   01-jun-25   Updated for CSE name-year (9th edition), for BibTeX 0.99d;
+%   17-jul-25   Updated for CSE name-year (9th edition), for BibTeX 0.99d;
 %               cseny sorts by author, then year, then month (where a
 %               month is present in the BibTeX database), then title.
 
 ENTRY
   { address
-    archive
-    assignee
     author
     booktitle
     chapter
@@ -81,7 +79,6 @@ ENTRY
     eid
     howpublished
     institution
-    inventor
     journal
     key
     lastchecked
@@ -148,24 +145,6 @@ FUNCTION {output.check}
   duplicate$ empty$
     { pop$ "empty " t * " in " * cite$ * warning$ }
     'output.nonnull
-  if$
-}
-
-FUNCTION {output.year.month.check}
-%
-% For functions where a month might need to appear in the date:
-% misc, newspaper, patent, techreport, unpublished
-%
-{ year empty$
-    { "empty year in " cite$ * "; no date information output" * warning$ }
-    { write$
-      ". " year * extra.label *
-      month empty$
-      { "" * }
-      { " " * month * }
-      if$
-      mid.sentence 'output.state :=
-    }
   if$
 }
 
@@ -262,6 +241,9 @@ FUNCTION {space.word}
 % Here are the language-specific definitions for explicit words.
 % Each function has a name bbl.xxx where xxx is the English word.
 
+FUNCTION {bbl.accessed}
+{ "accessed" }
+
 FUNCTION {bbl.and}
 { "and" }
 
@@ -273,15 +255,6 @@ FUNCTION {bbl.editors}
 
 FUNCTION {bbl.editor}
 { "editor" }
-
-FUNCTION {bbl.inventors} % special for @patent
-{ "inventors" }
-
-FUNCTION {bbl.inventor} % special for @patent
-{ "inventor" }
-
-FUNCTION {bbl.assignee} % special for @patent
-{ "assignee" }
 
 FUNCTION {bbl.edby}
 { "edited by" }
@@ -493,9 +466,6 @@ FUNCTION {format.key}
 FUNCTION {get.bbl.editor}
 { editor num.names$ #1 > 'bbl.editors 'bbl.editor if$ }
 
-FUNCTION {get.bbl.inventor} % special for @patent
-{ inventor num.names$ #1 > 'bbl.inventors 'bbl.inventor if$ }
-
 FUNCTION {format.editors}
 { editor empty$
     { "" }
@@ -541,38 +511,20 @@ FUNCTION {format.editors.secondary}
   if$
 }
 
-FUNCTION {format.inventors} % special for @patent
-{ inventor "inventor" format.names duplicate$ empty$ 'skip$
-    {
-      ", " *
-      get.bbl.inventor *
-    }
-  if$
-}
-
-FUNCTION {format.assignee} % special for @patent
-{ assignee "assignee" bibinfo.check duplicate$ empty$ 'skip$
-    {
-      ", " *
-      bbl.assignee *
-    }
-  if$
-}
-
 FUNCTION {urldate.check}
 { lastchecked empty$
     { urldate empty$
         { "" }
-        { " [accessed " urldate * "]" * add.period$ }
+        { " [" * bbl.accessed " " * urldate * "]" * add.period$ }
       if$
     }
-    { " [accessed " lastchecked * "]" * add.period$ }
+    { " [" * bbl.accessed " " * lastchecked * "]" * add.period$ }
   if$
 }
 
 FUNCTION {format.doi.or.url}
 %
-% Includes the DOI if available, or else the URL
+% Include the DOI if available, or else the URL
 %
 { doi empty$
     { url empty$
@@ -618,6 +570,24 @@ FUNCTION {n.dashify}
 
 FUNCTION {word.in}
 { bbl.in capitalize ": " * }
+
+FUNCTION {output.year.month.check}
+%
+% For functions where a month might need to appear in the date:
+% [news]article, misc, techreport, unpublished
+%
+{ year empty$
+    { "empty year in " cite$ * "; no date information output" * warning$ }
+    { write$
+      ". " year * extra.label *
+      month empty$
+      { "" * }
+      { " " * month * }
+      if$
+      mid.sentence 'output.state :=
+    }
+  if$
+}
 
 FUNCTION {format.date}
 { year "year" bibinfo.check duplicate$ empty$
@@ -821,41 +791,20 @@ FUNCTION {format.pages}
 }
 
 FUNCTION {format.journal.pages}
-{ pages duplicate$ empty$ 'pop$
-    { swap$ duplicate$ empty$
-        { pop$ pop$ format.pages }
-        {
-          ":" *
-          swap$
-          n.dashify
-          "pages" bibinfo.check
-          *
-        }
-      if$
-    }
-  if$
-}
-
-FUNCTION {format.newspaper.pages} % special for @newspaper
-%
-% Copy of {format.journal.pages} with added space for newspaper pages
-%
-{ pages duplicate$ empty$ 'pop$
-    { swap$ duplicate$ empty$
-        { pop$ pop$ format.pages }
-        {
-          ": " *  %  ":" *
-          swap$
-          n.dashify
-          "pages" bibinfo.check
-          *
-        }
+{ pages empty$
+    { "" }
+    { pages multi.page.check
+        { pages n.dashify }
+        { pages }
       if$
     }
   if$
 }
 
 FUNCTION {format.journal.eid}
+%
+% Occurs in journal crossrefs
+%
 { eid "eid" bibinfo.check
   duplicate$ empty$ 'pop$
     { swap$ duplicate$ empty$ 'skip$
@@ -874,27 +823,53 @@ FUNCTION {format.journal.eid}
   if$
 }
 
-FUNCTION {format.vol.num} % replaces {format.vol.num.pages}
-%
-% Renamed as {format.vol.num} since it does not include pages
-% We can still have a newspaper.pages equivalent...
-%
-{ volume field.or.null
-  duplicate$ empty$ 'skip$
-    {
-      "volume" bibinfo.check
-    }
+FUNCTION {format.eid}
+{ eid empty$
+    { "" }
+    { "" eid tie.or.space.connect }
   if$
-  number "number" bibinfo.check duplicate$ empty$ 'skip$
-    {
-      swap$ duplicate$ empty$
+}
+
+FUNCTION {format.vol.num.pages}
+{ volume field.or.null
+  number empty$
+    'skip$
+    { "(" number * ")" * *
+      volume empty$
         { "there's a number but no volume in " cite$ * warning$ }
         'skip$
       if$
-      swap$
-      "(" swap$ * ")" *
     }
-  if$ *
+  if$
+  pages empty$
+    'skip$
+    { duplicate$ empty$
+        { pop$ format.pages }
+        { ":" * pages n.dashify * }
+      if$
+    }
+  if$
+}
+
+FUNCTION {format.vol.num.eid}
+{ volume field.or.null
+  number empty$
+    'skip$
+    { "(" number * ")" * *
+      volume empty$
+        { "there's a number but no volume in " cite$ * warning$ }
+        'skip$
+      if$
+    }
+  if$
+  eid empty$
+    'skip$
+    { duplicate$ empty$
+        { pop$ format.eid }
+        { ": " * eid * }
+      if$
+    }
+  if$
 }
 
 FUNCTION {format.chapter.pages}
@@ -986,11 +961,6 @@ FUNCTION {format.tr.number}
   if$
 }
 
-FUNCTION {format.patent.number} % special for @patent
-{ 
-  number "number" bibinfo.check
-}
-
 FUNCTION {format.article.crossref}
 { word.in
   " \cite{" * crossref * "}" *
@@ -1001,8 +971,8 @@ FUNCTION {format.book.crossref}
     { "empty volume in " cite$ * "'s crossref of " * crossref * warning$
       word.in
     }
-    { bbl.volume volume tie.or.space.connect
-      bbl.of *
+    { bbl.volume capitalize volume tie.or.space.connect
+      bbl.of space.word *
     }
   if$
   "\cite{" * crossref * "}" *
@@ -1015,19 +985,19 @@ FUNCTION {format.incoll.inproc.crossref}
 
 FUNCTION {format.conference.address} 
 %
-% For use in {inproceedings} and {proceedings}
+% Occurs in {inproceedings} and {proceedings}
 %
 { address "address" bibinfo.check
 }
 
 FUNCTION {format.month}
 %
-% For use in {inproceedings} and {proceedings}
+% Occurs in {inproceedings} and {proceedings}
 %
 { month empty$
     { "" }
     { month "month" bibinfo.check
-    "" swap$ * "" *}
+    "" swap$ * "" * }
   if$
   remove.dots
 }
@@ -1048,7 +1018,10 @@ FUNCTION {article}
 { output.bibitem
   format.authors "author" output.check
   author format.key output
-  format.date "year" output.check
+  volume empty$ eid empty$ and 
+    { output.year.month.check }
+    { format.date "year" output.check}
+  if$
   new.block
   format.title "title" output.check
   new.block	
@@ -1057,13 +1030,17 @@ FUNCTION {article}
       "journal" bibinfo.check
       "journal" output.check
       new.sentence
-      format.vol.num output
+      eid empty$ 
+        { format.vol.num.pages output }
+        { format.vol.num.eid output }
+      if$
+    }  
+    { format.article.crossref output.nonnull
+      eid empty$
+        { format.journal.pages }
+        { format.journal.eid }
+      if$
     }
-    { format.article.crossref output.nonnull }
-  if$
-  eid empty$
-    { format.journal.pages }
-    { format.journal.eid }
   if$
   new.sentence
   note output
@@ -1277,59 +1254,6 @@ FUNCTION {misc}
   format.title output
   new.block
   howpublished output
-  new.sentence
-  note output
-  new.sentence
-  format.doi.or.url output
-  fin.entry
-}
-
-FUNCTION {newspaper}
-%
-% This function is work in progress, to allow newspaper article 
-% format to vary from that of a journal (date and pages at least).
-% The journal fields should all perhaps be renamed to newspaper?
-% The crossref might not be needed for a newspaper article.
-%
-{ output.bibitem
-  format.authors "author" output.check
-  author format.key output
-  output.year.month.check
-  new.block
-  format.title "title" output.check
-  new.block
-  crossref missing$
-    { journal remove.dots
-      "journal" bibinfo.check
-      "journal" output.check
-      new.sentence
-      format.vol.num output
-    }
-    { format.article.crossref output.nonnull }
-  if$
-  eid empty$
-    { format.newspaper.pages } % { format.journal.pages }
-    { format.journal.eid }
-  if$
-  new.sentence
-  note output
-  new.sentence
-  format.doi.or.url output
-  fin.entry
-}
-
-FUNCTION {patent}
-%
-% Requires inventor, assignee and number fields and a key in .bib
-%
-{ output.bibitem
-  format.inventors "inventor" output.check
-  format.assignee "assignee" output.check
-  output.year.month.check
-  new.block
-  format.title "title" output.check
-  new.sentence
-  format.patent.number output.nonnull
   new.sentence
   note output
   new.sentence
