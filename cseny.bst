@@ -1020,7 +1020,7 @@ FUNCTION {article}
   author format.key output
   volume empty$ eid empty$ and 
     { output.year.month.check }
-    { format.date "year" output.check}
+    { format.date "year" output.check }
   if$
   new.block
   format.title "title" output.check
