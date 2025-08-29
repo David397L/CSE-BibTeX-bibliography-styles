@@ -1,8 +1,8 @@
 %%% ====================================================================
 %%%  @BibTeX-style-file{
 %%%     author          = "David Lamkin",
-%%%     version         = "B.08",
-%%%     date            = "17 July 2025",
+%%%     version         = "B.09",
+%%%     date            = "28 August 2025",
 %%%     filename        = "csecs.bst",
 %%%     address         = "",
 %%%     checksum        = "",
@@ -42,7 +42,7 @@
 %%%  }
 %%% ====================================================================
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% BibTeX `csecs' bibliography style (17-Jul-25 version)
+% BibTeX `csecs' bibliography style (28-Aug-25 version)
 % An adaptation of the `unsrtnat' style, for use with the natbib package.
 % Copyright (C) 2025, All rights reserved.
 % Copying of this file is allowed, provided that if you make any changes at all
@@ -68,7 +68,7 @@
 %   24-jan-88   (OP) Updated for BibTeX version 0.99a, from alpha.bst 0.99a;
 %               apalike now sorts by author, then year, then title;
 %               THIS `apalike' VERSION DOES NOT WORK WITH BIBTEX 0.98i.
-%   17-jul-25   Updated for CSE citation-sequence (9th edition), for 
+%   28-aug-25   Updated for CSE citation-sequence (9th edition), for 
 %               BibTeX 0.99d; sorting is by citation sequence or key
 
 ENTRY
@@ -152,12 +152,6 @@ FUNCTION {output.check}
   if$
 }
 
-FUNCTION {fin.entry}
-{ add.period$	
-  write$ 
-  newline$
-}
-
 FUNCTION {new.block}
 { output.state before.all =
     'skip$
@@ -207,6 +201,19 @@ FUNCTION {or}
 {   { pop$ #1 }
     'skip$
   if$
+}
+
+FUNCTION {fin.entry}
+%
+% If doi/url is present, finish with no period; 
+% otherwise, finish with a period as standard.
+%
+{ doi empty$ url empty$ and
+    { add.period$ }
+    { }
+  if$
+  write$ 
+  newline$
 }
 
 STRINGS {z}
@@ -446,8 +453,9 @@ FUNCTION {format.names}
       nameptr #1 + 'nameptr :=
       namesleft #1 - 'namesleft :=
     }
-  while$
-  } if$
+   while$
+   } 
+ if$
 }
 
 FUNCTION {format.editor.names}
@@ -529,10 +537,10 @@ FUNCTION {urldate.check}
 { lastchecked empty$
     { urldate empty$
         { "" }
-        { " [" * bbl.accessed " " * urldate * "]" * add.period$ }
+        { "; [" * bbl.accessed " " * urldate "]" * add.period$ * }
       if$
     }
-    { " [" * bbl.accessed " " * lastchecked * "]" * add.period$ }
+    { "; [" * bbl.accessed " " * lastchecked "]" * add.period$ * }
   if$
 }
 
@@ -587,13 +595,13 @@ FUNCTION {word.in}
 
 FUNCTION {output.year.month.check}
 %
-% For functions where a month might need to appear with the date:
+% For functions where a month might need to appear in the date:
 % [news]article, misc, techreport, unpublished
 %
 { year empty$
     { "empty year in " cite$ * "; no date information output" * warning$ }
-    { write$
-      ". " year *  %  no extra.label here
+    { add.period$ write$
+      " " year * extra.label *
       month empty$
       { "" * }
       { " " * month * }
