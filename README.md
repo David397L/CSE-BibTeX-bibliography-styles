@@ -11,6 +11,8 @@ https://www.csemanual.org/Tools/CSE-Citation-Quick-Guide.html
 
 This is the most recent (2024) edition of the CSE manual of style.
 
+My intention then is to carry on and implement the manual in full, or as far as reasonably possible.
+
 If you use any of these files, please consider giving me a star if you liked the results, or let me know if you didn't. If you would like to develop anything further, please make a pull request.
 
 Happy BibTeXing!
