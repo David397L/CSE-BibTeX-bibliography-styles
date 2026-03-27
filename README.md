@@ -1,4 +1,4 @@
-# CSE BibTeX bibliography style files
+# Council of Science Editors (CSE) BibTeX bibliography style files
 
 csecn.bst is a BibTeX bibliography style for the Council of Science Editors (CSE) citation-name (ninth edition) citation style.
 
