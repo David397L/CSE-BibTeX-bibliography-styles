@@ -1,13 +1,20 @@
 %
 % This is csedemo.bib,
 % a demonstration database for my Council of Science Editors BibTeX styles.
-% Copyright (C) 2025 David Lamkin.
+% Copyright (C) 2025,2026 David Lamkin.
 % Unlimited copying and redistribution of this file are permitted if it
 % is unmodified. Modifications (and their redistribution) are also
 % permitted, as long as the resulting file is renamed.
 %
+% Please note: although I recommend using only the standard entry
+% types, I have tried to configure my own .bst files to accept some 
+% non-standard entries and handle them (more or less) appropriately,
+% so that a database prepared using those entry types can be used
+% as they are, without the need to spend time changing them.
+% Some examples of this can be seen in what follows.
+%
 
-@BOOK{Aga22,
+@book{Aga22,
   editor = {Agarwal, Anil and Jeyarajah, Santhini and Harries, Rhiannon and Weerakkody, Ruwan and McLatchie, Greg and Borley, Neil},
   year = 2022,
   title = {Oxford Handbook of Clinical Surgery},
@@ -17,25 +24,25 @@
   doi = {10.1093/med/9780198799481.001.0001}
   }
 
-@BOOK{ALS20,
+@book{ALS20,
   author = {{[ALSG] Advanced Life Support Group}},
   title = {Acute Psychiatric Emergencies: A Practical Approach},
   publisher = {Wiley-Blackwell},
   year = 2020
   }
 
-@ARTICLE{Ash20,
+@article{Ash20,
   author = {Ashraf, M. and others},
   year = 2020,
   title = {Interaction between the Distribution of Diabetic Retinopathy Lesions and the Association of Optical Coherence Tomography Angiography Scans with Diabetic Retinopathy Severity},
   journal = {JAMA Ophthalmol.},
   volume = 138,
-  number = {12},
+  number = 12,
   pages = {1291--1297},
   doi = {10.1001/jamaophthalmol.2020.4516}
   }
 
-@ARTICLE{BDS22,
+@article{BDS22,
   author = {Bhaskar, S. T and Dholaria, B. R. and Sengsayadeth, S. M. and Savani, B. N. and Oluwole, O. O},
   year = 2022,
   title = {Role of Bridging Therapy during Chimeric Antigen Receptor {T} Cell Therapy},
@@ -46,7 +53,7 @@
   doi = {10.1002/jha2.335}
   }
 
-@ARTICLE{BAC17,
+@article{BAC17,
   author = {Bibi, S. and Alam, K. and Chishtie, F. and Bibi, H. and Rahman, S.},
   year = 2017,
   title = {Temporal Variation of Black Carbon Concentration using {A}ethalometer Observations and its Relationships with Meteorological Variables in {K}arachi, {P}akistan},
@@ -56,7 +63,7 @@
   doi = {10.1016/j.jastp.2017.03.017}
   }
 
-@UNPUBLISHED{Cha05,
+@unpublished{Cha05,
   author = {Charles, L. and Gordner, R.},
   year = 2005,
   title = {Analysis of {MedlinePlus en Espa{\~n}ol} Customer Service Requests},
@@ -64,7 +71,7 @@
   month = may # "~14--19",
   }
 
-@ARTICLE{Cor21,
+@article{Cor21,
   author = {Corrigan, Jr, T. J. and S. Businger},
   month = dec # "~30",
   year = 2021,
@@ -74,7 +81,7 @@
   doi = {10.1175/MWR-D-21-0028.1}
   }
 
-@MANUAL{CSE24,
+@manual{CSE24,
   author = {{Council of Science Editors, Style Manual Task Force}},
   title = {The {CSE} Manual: Scientific Style and Format for Authors, Editors, and Publishers},
   year = 2024,
@@ -83,7 +90,7 @@
   organization = {Council of Science Editors in cooperation with The University of Chicago Press}
   }
 
-@BOOK{DeD20,
+@book{DeD20,
   author = {De Doncker, R. W. and Duco, W. J. P. and Veltman, A.},
   title = {Advanced Electrical Drives: Analysis, Modeling, Control},
   year = 2020,
@@ -91,7 +98,7 @@
   address = {New York (NY)},
   }
 
-@MISC{Eng20,
+@misc{Eng20,
   key = {Engelhardt TP et al, inventors; Roche Diabetes Care, Inc, assignee},
   year = 2020,
   month = feb # "~25",
@@ -99,7 +106,7 @@
   howpublished = {United States patent US10568511B2}
   }
 
-@INCOLLECTION{Eve17,
+@incollection{Eve17,
   author = {Everard, M.},
   booktitle = {Ecosystem Services: Key Issues},
   year = 2017,
@@ -109,7 +116,7 @@
   publisher = {Routledge},
   }
 
-@ARTICLE{Fau20,
+@article{Fau20,
   author = {Fauci, Anthony S. and Lane, H. C.},
   year = 2020,
   title = {Four Decades of {HIV/AIDS}---Much Accomplished, Much to Do},
@@ -120,7 +127,7 @@
   doi = {10.1056/NEJMp1916753}
   }
 
-@INCOLLECTION{Gei21,
+@incollection{Gei21,
   author = {Geisslitz, S. and Scherf, K.},
   title = {The Holy Grail of Ancient Cereals},
   editor = {Boukid, F.},
@@ -131,7 +138,7 @@
   pages = {269--301}
   }
 
-@BOOK{Gup21,
+@book{Gup21,
   editor = {Gupta, H. K.},
   year = 2021,
   title = {Encyclopedia of Solid Earth Geophysics},
@@ -140,7 +147,7 @@
   publisher = {Springer}
   }
 
-@ARTICLE{Haa21,
+@article{Haa21,
   author = {Haasnoot, M. and Lawrence, J. and Magnan, A. K.},
   title = {Pathways to Coastal Retreat},
   journal = {Science},
@@ -151,17 +158,16 @@
   doi = {10.1126/science.abi6594}
   }
 
-@MISC{Hea20,
+@misc{Hea20,
   key = {Health equity considerations and racial and ethnic minority groups},
   year = 2020,
-  month = apr # "~30",
+  month = apr # "~30 [updated 2022 Jan~25]",
   title = {},
   howpublished = {US Centers for Disease Control and Prevention, National Center for Immunization and Respiratory Diseases, Division of Viral Diseases},
   url = {https://www.cdc.gov/coronavirus/2019-ncov/community/health-equity/race-ethnicity.html},
-  note = {[updated 2022 Jan~25]}
   }
 
-@BOOK{Kas26,
+@book{Kas26,
   author = {Kasper, D. and others},
   year = {Forthcoming 2026},
   title = {Harrison's Principles of Internal Medicine},
@@ -169,7 +175,7 @@
   publisher = {McGraw-Hill Professional}
   }
 
-@ARTICLE{Kim20,
+@article{Kim20,
   author = {Kim, K. Y. and Kim, B. S.},
   title = {The Effect of Regional Warming on the {E}ast {A}sian Summer Monsoon},
   journal = {Clim. Dyn.},
@@ -179,7 +185,7 @@
   doi = {10.1007/s00382-020-05169-7}
   }
 
-@BOOK{Kla03,
+@book{Kla03,
   author = {Klarsfeld, A. and Revah, F.},
   year = 2003,
   title = {The Biology of Death: Origins of Mortality},
@@ -188,7 +194,7 @@
   publisher = {Cornell University Press}
   }
 
-@ARTICLE{Lee20Art,
+@article{Lee20Art,
   author = {Lee, Stuart M. C. and others},
   title = {Arterial Structure and Function during and after Long-Duration Spaceflight},
   journal = {J. Appl. Physiol.},
@@ -200,7 +206,7 @@
   doi = {10.1152/japplphysiol.00550.2019}
   }
 
-@ARTICLE{Lee20Eff,
+@article{Lee20Eff,
   author = {Lee, Stuart M. C. and others},
   title = {Efficacy of Gradient Compression Garments in the Hours after Long-Duration Spaceflight},
   journal = {Front. Physiol.},
@@ -211,17 +217,16 @@
   doi = {10.3389/fphys.2020.00784}
   }
 
-@PHDTHESIS{Lia20,
+@phdthesis{Lia20,
   author = {S. Liang},
   title = {Transport Properties of Topological Semimetals and Non-Symmorphic Topological Insulator},
-  type = {},
   address = {Princeton (NJ)},
   school = {Princeton University},
   year = 2020,
   url = {https://arks.princeton.edu/ark:/88435/dsp01vm40xv52n}
   }
 
-@ARTICLE{Liu20,
+@article{Liu20,
   author = {Liu, L. and Bai, P. and Liu, C. and Tian, W. and Liang, K.},
   title = {Changes in Extreme Precipitation in the {M}ekong {B}asin},
   journal = {Adv. Meteorol.},
@@ -231,7 +236,7 @@
   doi = {10.1155/2020/8874869},
   }
 
-@MISC{Lop21,
+@misc{Lop21,
   author = {Lopez Bernal, J. and others},
   year = 2021,
   title = {Effectiveness of {COVID-19} Vaccines against the {B.1.617.2} Variant [preprint]},
@@ -239,7 +244,7 @@
   doi = {10.1101/2021.05.22.21257658}
   }
 
-@BOOK{Luz85,
+@book{Luz85,
   author = {Luzikov, V. N.},
   note = {Translated by A. V. Galkin},
   editor = {Roodyn, D. B.},
@@ -249,14 +254,15 @@
   publisher = {Consultants Bureau}
   }
 
-@MISC{MPBnd,
+@misc{MPBnd,
   key = {Montrose Point Bird Sanctuary, Chicago, Illinois},
+  year = {},
   title = {Google {M}aps},
   url = {https://goo.gl/maps/GJALYGBXFZ8TSGK5A},
   urldate = "2022 " # jan # "~3"
   }
 
-@BOOK{Rab19,
+@book{Rab19,
   editor = {A. B. Rabinovich and H. M Fritz and Y. Tanioka and Geist, E. L.},
   year = 2019,
   title = {Global Tsunami Science: Past and Future},
@@ -264,7 +270,7 @@
   volume = 3
   }
 
-@BOOK{Rei23,
+@book{Rei23,
   author = {M. J. Reiss and M. Ruse},
   title = {The New Biology: A Battle between Mechanism and Organicism},
   publisher = {Harvard University Press},
@@ -272,7 +278,7 @@
   year = 2023
   }
 
-@ARTICLE{YKH18,
+@article{YKH18,
   author = {A. M. Yohannes and A. Kaplan and N. A. Hanania},
   year = 2018,
   title = {Anxiety and Depression in Chronic Obstructive Pulmonary Disease: Recognition and Management},
@@ -283,12 +289,116 @@
   doi = {10.3949/ccjm.85.s1.03}
   }
 
-@ARTICLE{Zim210409,
+@article{Zim210409,
   author = {Zimmer, C.},
   year = 2021,
-  month = apr # "~09",
+  month = apr # "~09 [updated 2021 Apr~27]",
   title = {To Speed Vaccination, Some Call for Delaying Second Shots},
   journal = {The New York Times},
-  note = {[updated 2021 Apr~27]},
   url = {https://www.nytimes.com/2021/04/09/health/covid-vaccine-second-dose-delay.html}
+  }
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% WEBPAGE ARTICLE TYPE (ALIAS FOR MISC)
+@webpage{apastyle,
+  url = {http://www.apastyle.org/elecref.html},
+  author = {{American Psychological Association}},
+  title = {Electronic References},
+  year = 2001,
+  lastchecked = "2002 " # oct # "~23",
+  note = {Excerpted from the 5th edition of the APA Publication Manual}
+}
+
+% MANUAL WITH AUTHOR
+@manual{APA10,
+  author = {{American Psychological Association}},
+  organization = {American Psychological Association},
+  year = 2010,
+  title = {Publication Manual of the {A}merican {P}sychological {A}ssociation},
+  edition = 6,
+  address = {Washington, DC}
+  }
+
+% NEWSPAPER ENTRY TYPE (ALIAS FOR ARTICLE)
+@newspaper{Ber00,
+  author = {Berkowitz, A. D.},
+  year = 2000,
+  month = nov # "~24",
+  title = {How to Tackle the Problem of Student Drinking [Letter to the Editor]},
+  journal = {The Chronicle of Higher Education}
+  }
+
+% ARTICLE IN PRESS
+@article{BriIP,
+  author = {Briscoe, R.},
+  year = {In press},
+  title = {Egocentric Spatial Representation in Action and Perception},
+  journal = {Philosophy and Phenomenological Research},
+  url = {http://cogprints.org/5780/1/ECSRAP.F07.pdf}
+  }
+
+% MANUAL WITH KEY IN LIEU OF AUTHOR
+@manual{bsi85,
+  key = {BSI},
+  year = 1985,
+  title = {Specification for Abbreviation of Title Words and Titles of Publications},
+  address = {London},
+  organization = {British Standards Institution}
+  }
+
+% SPECIAL ISSUE OF A JOURNAL, WITH EDITOR
+@article{Goo99,
+  editor = {Good, Thomas L.},
+  title = {Non-Subject-Matter Outcomes of Schooling},
+  note = {Special issue},
+  journal = {Elementary School Journal},
+  volume = 99,
+  number = 5,
+  year = 1999
+  }
+
+% FORTHCOMING BOOK
+@book{Lon25,
+  author = {Longo, Dan and Fauci, Anthony S. and Kasper, Dennis L. and Hauser, Stephen and Jameson, J. Larry and Loscalzo, Joseph and Holland, Steven M. and Langford, Carol A.},
+  year = {Forthcoming 2025},
+  title = {Harrison's Principles of Internal Medicine},
+  edition = 22,
+  publisher = {McGraw-Hill Medical}
+  }
+
+% MAGAZINE ENTRY TYPE (ALIAS FOR ARTICLE)
+@magazine{Mea23,
+  author = {Mead, Rebecca},
+  year = 2023,
+  title = {Terms of Aggrievement},
+  journal = {New Yorker},
+  month = dec # "~18"
+  }
+
+@techreport{Mor88,
+  author = {Moray, N. P. and Huey, B. M.},
+  year = 1988,
+  title = {Human Factors Research and Nuclear Safety},
+  address = {Washington, DC},
+  institution = {National Academy Press},
+  type = {Contract},
+  number = {No.: NRC-04-86-301},
+  note = {Available from: NTIS, Springfield, VA; PB89-175517. Sponsored by the Nuclear Regulatory Commission}
+  }
+
+@unpublished{Roh08,
+  author = {Rohde, Hannah and Roger Levy and Andrew Kehler},
+  year = 2008,
+  month = mar,
+  title = {Implicit Causality Biases Influence Relative Clause Attachment},
+  note = {Poster presented at the 21st CUNY Conference on Human Sentence Processing; Chapel Hill, NC}
+  }
+
+% MANUAL WITH ORGANIZATION IN LIEU OF AUTHOR
+@manual{who93,
+  organization = {World Health Organization},
+  title = {{WHO} Editorial Style Manual},
+  address = {Geneva},
+  year = 1993
   }
