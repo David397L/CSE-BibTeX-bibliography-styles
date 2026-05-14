@@ -1,8 +1,8 @@
 %%% ====================================================================
 %%%  @BibTeX-style-file{
 %%%     author          = "David Lamkin",
-%%%     version         = "B.14",
-%%%     date            = "5 December 2025",
+%%%     version         = "B.15",
+%%%     date            = "14 May 2026",
 %%%     filename        = "cseny.bst",
 %%%     address         = "",
 %%%     checksum        = "",
@@ -10,17 +10,17 @@
 %%%     supported       = "yes",
 %%%     abstract        = "The file produces bibliographies more or
 %%%                        less in the Council of Science Editors (CSE) 
-%%%                        name-year (ninth edition) format. 
-%%%                        It was adapted from Alan Rogers' cbe.bst,
-%%%                        incorporating features of Erik Meijer's 
-%%%                        apacite and Patrick W. Daly 
+%%%                        name-year (ninth edition) format. It
+%%%                        was adapted from Patrick W. Daly's plainnat.bst,
+%%%                        incorporating features of Alan Rogers' cbe.bst, 
+%%%                        Erik Meijer's apacite and Patrick W. Daly 
 %%%                        and Arthur Ogawa's merlin.mbs".
 %%%
 %%%     Usage: The preamble of the .tex document has to contain at least:
 %%%
 %%%     \usepackage[sort]{natbib}
 %%%     \bibpunct[, ]{(}{)}{;}{a}{}{,}
-%%%     \newcommand{\nummonth}[1]{\ifcase #1\or Jan\or Feb\or Mar\or Apr\or 
+%%%     \newcommand{\csemonth}[1]{\ifcase #1\or Jan\or Feb\or Mar\or Apr\or
 %%%        May\or Jun\or Jul\or Aug\or Sep\or Oct\or Nov\or Dec\else
 %%%        {#1}\fi}
 %%%
@@ -37,9 +37,9 @@
 %%%  }
 %%% ====================================================================
 %
-% BibTeX `cseny' bibliography style (05-Dec-25 version)
+% BibTeX `cseny' bibliography style (14-May-26 version)
 % An adaptation of the `plainnat' style, for use with the natbib package.
-% Copyright (C) 2025, all rights reserved.
+% Copyright (C) 2025, 2026. All rights reserved.
 % Copying of this file is allowed, provided that if you make any changes at all
 % you name it something other than `cseny.bst', `csecn.bst' or `csecs.bst'.
 % This restriction helps ensure that all copies are identical.
@@ -83,6 +83,7 @@ ENTRY
     school
     series
     title
+    translator
     type
     url
     urldate
@@ -219,12 +220,35 @@ FUNCTION {remove.dots}
    while$
 }
 
+FUNCTION {new.block.checka}
+{ empty$
+    'skip$
+    'new.block
+  if$
+}
+
 FUNCTION {new.block.checkb}
 { empty$
   swap$ empty$
   and
     'skip$
     'new.block
+  if$
+}
+
+FUNCTION {new.sentence.checka}
+{ empty$
+    'skip$
+    'new.sentence
+  if$
+}
+
+FUNCTION {new.sentence.checkb}
+{ empty$
+  swap$ empty$
+  and
+    'skip$
+    'new.sentence
   if$
 }
 
@@ -261,6 +285,12 @@ FUNCTION {bbl.editor}
 
 FUNCTION {bbl.edby}
 { "edited by" }
+
+FUNCTION {bbl.translators}
+{ "translators" }
+
+FUNCTION {bbl.translator}
+{ "translator" }
 
 FUNCTION {bbl.edition}
 { "ed" }	
@@ -470,6 +500,9 @@ FUNCTION {format.key}
 FUNCTION {get.bbl.editor}
 { editor num.names$ #1 > 'bbl.editors 'bbl.editor if$ }
 
+FUNCTION {get.bbl.translator}
+{ translator num.names$ #1 > 'bbl.translators 'bbl.translator if$ }
+
 FUNCTION {format.editors}
 { editor empty$
     { "" }
@@ -494,6 +527,18 @@ FUNCTION {format.editors.primary}
   if$
 }
 
+FUNCTION {format.translators.primary}
+%
+% Translators in primary position in {book} and {inbook}
+% when there is no author.
+%
+{ translator "translator" format.names duplicate$ empty$ 'skip$
+    {
+      ", " * get.bbl.translator *
+    }
+  if$
+}
+
 FUNCTION {format.editors.secondary}
 %
 % Editors in secondary position in {book} and {inbook}
@@ -507,6 +552,52 @@ FUNCTION {format.editors.secondary}
           editor num.names$ #1 >
             { ", " * bbl.editors * }
             { ", " * bbl.editor * }
+          if$
+        }
+      if$
+    }
+  if$
+}
+
+FUNCTION {format.translators.secondary}
+%
+% Translators in secondary position in {book} and {inbook}
+% Separate editors and translators is only a temporary solution;
+% ultimately they could be combined into one function.
+%
+{ author empty$
+    { "" }
+    { translator empty$
+        { "" }
+        { translator "translator" format.names
+          translator num.names$ #1 >
+            { ", " * bbl.translators * }
+            { ", " * bbl.translator * }
+          if$
+        }
+      if$
+    }
+  if$
+}
+
+FUNCTION {format.translators.incollection}
+%
+% Translators in secondary/tertiary(?) position in {incollection}
+% Separate editors and translators is only a temporary solution;
+% ultimately they might be combined into one function
+%
+{ editor empty$
+    { "" }
+    { author empty$
+        { "" }
+        { translator empty$
+            { "" }
+            { translator "translator" format.names
+              translator num.names$ #1 >
+                { ", " * bbl.translators * }
+                { ", " * bbl.translator * }
+              if$
+            }
           if$
         }
       if$
@@ -586,6 +677,11 @@ FUNCTION {format.full.names}
 }
 
 FUNCTION {author.editor.full}
+%
+% This gives only ``Translator et al.'' when there are more 
+% than two (primary) translators; fix in a future release?
+% Should be author.editor.translator.full ?
+%
 { author empty$
     { editor empty$
         { "" }
@@ -613,6 +709,7 @@ FUNCTION {editor.full}
 FUNCTION {make.full.names}
 %
 % Include the extended list of entry types here?
+% And author.editor.translator.full if we make it...
 %
 { type$ "book" =
   type$ "inbook" =
@@ -1164,6 +1261,7 @@ FUNCTION {book}
 { output.bibitem
   author empty$
     { format.editors.primary "author and editor" output.check
+      format.translators.primary output
       editor format.key output
     }
     { format.authors output.nonnull
@@ -1181,6 +1279,7 @@ FUNCTION {book}
     { format.edition output
       format.bvolume output
       new.sentence
+      format.translators.secondary output
       format.editors.secondary output
       new.sentence
       publisher "publisher" output.check
@@ -1219,6 +1318,7 @@ FUNCTION {inbook}
 { output.bibitem
   author empty$
     { format.editors.primary "author and editor" output.check
+      format.translators.primary output
       editor format.key output
     }
     { format.authors output.nonnull
@@ -1236,6 +1336,7 @@ FUNCTION {inbook}
     { format.edition output
       format.bvolume output
       new.sentence
+      format.translators.secondary output
       format.editors.secondary output
       new.sentence
       publisher "publisher" output.check
@@ -1269,6 +1370,8 @@ FUNCTION {incollection}
       new.sentence
       format.edition output
       format.bvolume output
+      new.sentence
+      format.translators.incollection output
       new.sentence
       publisher "publisher" output.check
       new.sentence
@@ -1474,28 +1577,26 @@ FUNCTION {default.type} { misc }
 % The standard "month" macros are redefined so that 
 % they can be sorted in chronological order.
 
-MACRO {jan} {"{\nummonth{01}}"}  %  {"Jan"}
-MACRO {feb} {"{\nummonth{02}}"}  %  {"Feb"}
-MACRO {mar} {"{\nummonth{03}}"}  %  {"Mar"}
-MACRO {apr} {"{\nummonth{04}}"}  %  {"Apr"}
-MACRO {may} {"{\nummonth{05}}"}  %  {"May"}
-MACRO {jun} {"{\nummonth{06}}"}  %  {"Jun"}
-MACRO {jul} {"{\nummonth{07}}"}  %  {"Jul"}
-MACRO {aug} {"{\nummonth{08}}"}  %  {"Aug"}
-MACRO {sep} {"{\nummonth{09}}"}  %  {"Sep"}
-MACRO {oct} {"{\nummonth{10}}"}  %  {"Oct"}
-MACRO {nov} {"{\nummonth{11}}"}  %  {"Nov"}
-MACRO {dec} {"{\nummonth{12}}"}  %  {"Dec"}
+MACRO {jan} {"{\csemonth{01}}"}  %  {"Jan"}
+MACRO {feb} {"{\csemonth{02}}"}  %  {"Feb"}
+MACRO {mar} {"{\csemonth{03}}"}  %  {"Mar"}
+MACRO {apr} {"{\csemonth{04}}"}  %  {"Apr"}
+MACRO {may} {"{\csemonth{05}}"}  %  {"May"}
+MACRO {jun} {"{\csemonth{06}}"}  %  {"Jun"}
+MACRO {jul} {"{\csemonth{07}}"}  %  {"Jul"}
+MACRO {aug} {"{\csemonth{08}}"}  %  {"Aug"}
+MACRO {sep} {"{\csemonth{09}}"}  %  {"Sep"}
+MACRO {oct} {"{\csemonth{10}}"}  %  {"Oct"}
+MACRO {nov} {"{\csemonth{11}}"}  %  {"Nov"}
+MACRO {dec} {"{\csemonth{12}}"}  %  {"Dec"}
 
 % Database entries will be sorted by year, then month (if given), 
 % even when the month is not output in the bibitem, e.g. journal 
 % articles. This then requires another macro to output the months  
 % as words like Jan, Feb, etc. See lines 23-25 of this .bst file.
-
 % If sorting by month is not desired, the relevant four lines 
 % at FUNCTION {presort} and FUNCTION {bib.sort.order} could 
 % be commented out, in a suitably renamed copy of this file.
-
 
 MACRO {acmcs} {"ACM Comput. Surv."}
 MACRO {acta} {"Acta Inf."}
@@ -1517,7 +1618,6 @@ MACRO {toms} {"ACM Trans. Math. Software"}
 MACRO {toois} {"ACM Trans. Office Inf. Syst."}
 MACRO {toplas} {"ACM Trans. Progr. Lang. Syst."}
 MACRO {tcs} {"Theor. Comput. Sci."}
-
 
 READ
 
@@ -1567,14 +1667,33 @@ FUNCTION {author.key.label}
   if$
 }
 
-FUNCTION {author.editor.key.label}
+%FUNCTION {author.editor.key.label}   % like plainnat
+%{ author empty$
+%    { editor empty$
+%        { key empty$
+%            { cite$ #1 #3 substring$ }
+%            'key
+%          if$
+%        }
+%        { editor format.lab.names }
+%      if$
+%    }
+%    { author format.lab.names }
+%  if$
+%}
+
+FUNCTION {author.editor.translator.key.label}   % translator added
 { author empty$
     { editor empty$
-        { key empty$
-            { cite$ #1 #3 substring$ }
-            'key	
+        { translator empty$
+            { key empty$
+                { cite$ #1 #3 substring$ }
+                'key	
+              if$
+            }
+            { translator format.lab.names }
           if$
-        }
+          }
         { editor format.lab.names }
       if$
     }
@@ -1583,10 +1702,6 @@ FUNCTION {author.editor.key.label}
 }
 
 FUNCTION {author.key.organization.label}
-%
-% Provide label formatting by key if author is null,
-% or by organization if key is also null.
-%
 { author empty$
     { key empty$
         { organization empty$
@@ -1603,10 +1718,6 @@ FUNCTION {author.key.organization.label}
 }
 
 FUNCTION {editor.key.organization.label}
-%
-% Provide label formatting by key if editor is null,
-% or by organization if key is also null.
-%
 { editor empty$
     { key empty$
         { organization empty$
@@ -1640,7 +1751,7 @@ FUNCTION {calc.short.authors}
       or
     or
   or
-    'author.editor.key.label
+    'author.editor.translator.key.label   % translator added
     { type$ "proceedings" =
     'editor.key.organization.label
        { type$ "manual" =
@@ -1713,15 +1824,36 @@ FUNCTION {author.sort}
   if$
 }
 
-FUNCTION {author.editor.sort}
+%FUNCTION {author.editor.sort}   % like plainnat
+%{ author empty$
+%    { editor empty$
+%        { key empty$
+%            { "to sort, need author, editor, or key in " cite$ * warning$
+%              ""
+%            }
+%            { key sortify }
+%          if$
+%        }
+%        { editor sort.format.names }
+%      if$
+%    }
+%    { author sort.format.names }
+%  if$
+%}
+
+FUNCTION {author.editor.translator.sort}   % translator added
 { author empty$
     { editor empty$
-        { key empty$
-            { "to sort, need author, editor, or key in " cite$ * warning$
-              ""
+        { translator empty$
+            { key empty$
+                { "to sort, need author, editor, translator, or key in " 
+                  cite$ * warning$ ""
+                }
+                { key sortify }
+              if$
             }
-            { key sortify }
-            if$
+            { translator sort.format.names }
+          if$
         }
         { editor sort.format.names }
       if$
@@ -1786,7 +1918,7 @@ FUNCTION {presort}
       or
     or
   or
-    'author.editor.sort
+    'author.editor.translator.sort   % translator added
     { type$ "proceedings" =
         'editor.organization.sort
         { type$ "manual" =
@@ -1884,7 +2016,7 @@ FUNCTION {bib.sort.order}
 
 ITERATE {bib.sort.order}
 
-SORT		% by sort.label, year, (month), title = final bibliography order
+SORT		% by sort.label, year (month), title = final bibliography order
 
 FUNCTION {begin.bib}
 { preamble$ empty$

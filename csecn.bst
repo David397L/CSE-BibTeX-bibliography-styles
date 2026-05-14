@@ -1,8 +1,8 @@
 %%% ====================================================================
 %%%  @BibTeX-style-file{
 %%%     author          = "David Lamkin",
-%%%     version         = "B.11",
-%%%     date            = "12 February 2026",
+%%%     version         = "B.12",
+%%%     date            = "14 May 2026",
 %%%     filename        = "csecn.bst",
 %%%     address         = "",
 %%%     checksum        = "",
@@ -32,9 +32,9 @@
 %%%  }
 %%% ====================================================================
 %
-% BibTeX `csecn' bibliography style (12-Feb-26 version)
+% BibTeX `csecn' bibliography style (14-May-26 version)
 % An adaptation of the `plainnat' style, for use with the natbib package.
-% Copyright (C) 2025, 2026, all rights reserved.
+% Copyright (C) 2025, 2026. All rights reserved.
 % Copying of this file is allowed, provided that if you make any changes at all
 % you name it something other than `csecn.bst', `csecs.bst' or `cseny.bst'.
 % This restriction helps ensure that all copies are identical.
@@ -77,6 +77,7 @@ ENTRY
     school
     series
     title
+    translator
     type
     url
     urldate
@@ -283,6 +284,12 @@ FUNCTION {bbl.editor}
 
 FUNCTION {bbl.edby}
 { "edited by" }
+
+FUNCTION {bbl.translators}
+{ "translators" }
+
+FUNCTION {bbl.translator}
+{ "translator" }
 
 FUNCTION {bbl.edition}
 { "ed" }	
@@ -492,6 +499,9 @@ FUNCTION {format.key}
 FUNCTION {get.bbl.editor}
 { editor num.names$ #1 > 'bbl.editors 'bbl.editor if$ }
 
+FUNCTION {get.bbl.translator}
+{ translator num.names$ #1 > 'bbl.translators 'bbl.translator if$ }
+
 FUNCTION {format.editors}
 { editor empty$
     { "" }
@@ -516,6 +526,18 @@ FUNCTION {format.editors.primary}
   if$
 }
 
+FUNCTION {format.translators.primary}
+%
+% Translators in primary position in {book} and {inbook}
+% when there is no author.
+%
+{ translator "translator" format.names duplicate$ empty$ 'skip$
+    {
+      ", " * get.bbl.translator *
+    }
+  if$
+}
+
 FUNCTION {format.editors.secondary}
 %
 % Editors in secondary position in {book} and {inbook}
@@ -536,6 +558,52 @@ FUNCTION {format.editors.secondary}
   if$
 }
 
+FUNCTION {format.translators.secondary}
+%
+% Translators in secondary position in {book} and {inbook}
+% Separate editors and translators is only a temporary solution;
+% ultimately they could be combined into one function.
+%
+{ author empty$
+    { "" }
+    { translator empty$
+        { "" }
+        { translator "translator" format.names
+          translator num.names$ #1 >
+            { ", " * bbl.translators * }
+            { ", " * bbl.translator * }
+          if$
+        }
+      if$
+    }
+  if$
+}
+
+FUNCTION {format.translators.incollection}
+%
+% Translators in secondary/tertiary(?) position in {incollection}
+% Separate editors and translators is only a temporary solution;
+% ultimately they might be combined into one function.
+%
+{ editor empty$
+    { "" }
+    { author empty$
+        { "" }
+        { translator empty$
+            { "" }
+            { translator "translator" format.names
+              translator num.names$ #1 >
+                { ", " * bbl.translators * }
+                { ", " * bbl.translator * }
+              if$
+            }
+          if$
+        }
+      if$
+    }
+  if$
+}
+
 FUNCTION {urldate.check}
 { lastchecked empty$
     { urldate empty$
@@ -549,7 +617,7 @@ FUNCTION {urldate.check}
 
 FUNCTION {format.doi.or.url}
 %
-% Includes the DOI if available, or else the URL.
+% Includes the DOI if available, or else the URL
 %
 { doi empty$
     { url empty$
@@ -608,6 +676,11 @@ FUNCTION {format.full.names}
 }
 
 FUNCTION {author.editor.full}
+%
+% This gives only ``Translator et al.'' when there are more 
+% than two (primary) translators; fix in a future release?
+% Should be author.editor.translator.full ?
+%
 { author empty$
     { editor empty$
         { "" }
@@ -635,6 +708,7 @@ FUNCTION {editor.full}
 FUNCTION {make.full.names}
 %
 % Include the extended list of entry types here?
+% And author.editor.translator.full if we make it...
 %
 { type$ "book" =
   type$ "inbook" =
@@ -1240,6 +1314,7 @@ FUNCTION {book}
 { output.bibitem
   author empty$
     { format.editors.primary "author and editor" output.check
+      format.translators.primary output
       editor format.key output
     }
     { format.authors output.nonnull
@@ -1256,6 +1331,7 @@ FUNCTION {book}
     { format.edition output
       format.bvolume output
       new.sentence
+      format.translators.secondary output
       format.editors.secondary output
       new.sentence
       publisher "publisher" output.check
@@ -1295,6 +1371,7 @@ FUNCTION {inbook}
 { output.bibitem
   author empty$
     { format.editors.primary "author and editor" output.check
+      format.translators.primary output
       editor format.key output
     }
     { format.authors output.nonnull
@@ -1311,6 +1388,7 @@ FUNCTION {inbook}
     { format.edition output
       format.bvolume output
       new.sentence
+      format.translators.secondary output
       format.editors.secondary output
       new.sentence
       publisher "publisher" output.check
@@ -1344,6 +1422,8 @@ FUNCTION {incollection}
       new.sentence
       format.edition output
       format.bvolume output
+      new.sentence
+      format.translators.incollection output
       new.sentence
       publisher "publisher" output.check
       format.date "year" output.check
@@ -1629,14 +1709,33 @@ FUNCTION {author.key.label}
   if$
 }
 
-FUNCTION {author.editor.key.label}
+%FUNCTION {author.editor.key.label}   % like plainnat
+%{ author empty$
+%    { editor empty$
+%        { key empty$
+%            { cite$ #1 #3 substring$ }
+%            'key
+%          if$
+%        }
+%        { editor format.lab.names }
+%      if$
+%    }
+%    { author format.lab.names }
+%  if$
+%}
+
+FUNCTION {author.editor.translator.key.label}   % translator added
 { author empty$
     { editor empty$
-        { key empty$
-            { cite$ #1 #3 substring$ }
-            'key
+        { translator empty$
+            { key empty$
+                { cite$ #1 #3 substring$ }
+                'key	
+              if$
+            }
+            { translator format.lab.names }
           if$
-        }
+          }
         { editor format.lab.names }
       if$
     }
@@ -1645,10 +1744,6 @@ FUNCTION {author.editor.key.label}
 }
 
 FUNCTION {author.key.organization.label}
-%
-% Provide label formatting by key if author is null,
-% or by organization if key is also null.
-%
 { author empty$
     { key empty$
         { organization empty$
@@ -1665,10 +1760,6 @@ FUNCTION {author.key.organization.label}
 }
 
 FUNCTION {editor.key.organization.label}
-%
-% Provide label formatting by key if editor is null,
-% or by organization if key is also null.
-%
 { editor empty$
     { key empty$
         { organization empty$
@@ -1702,7 +1793,7 @@ FUNCTION {calc.short.authors}
       or
     or
   or
-    'author.editor.key.label
+    'author.editor.translator.key.label   % translator added
     { type$ "proceedings" =
     'editor.key.organization.label
        { type$ "manual" =
@@ -1729,6 +1820,9 @@ FUNCTION {calc.label}
   *
   'label :=
 }
+
+%%%%%%%% Lines of code above here are common to csecn.bst and csecs.bst %%%%%%%%
+%%%%%%%%%%%%% Lines of code below here are specific to csecn.bst %%%%%%%%%%%%%%%
 
 FUNCTION {sort.format.names}
 { 's :=
@@ -1776,14 +1870,35 @@ FUNCTION {author.sort}
   if$
 }
 
-FUNCTION {author.editor.sort}
+%FUNCTION {author.editor.sort}   % like plainnat
+%{ author empty$
+%    { editor empty$
+%        { key empty$
+%            { "to sort, need author, editor, or key in " cite$ * warning$
+%              ""
+%            }
+%            { key sortify }
+%          if$
+%        }
+%        { editor sort.format.names }
+%      if$
+%    }
+%    { author sort.format.names }
+%  if$
+%}
+
+FUNCTION {author.editor.translator.sort}   % translator added
 { author empty$
     { editor empty$
-        { key empty$
-            { "to sort, need author, editor, or key in " cite$ * warning$
-              ""
+        { translator empty$
+            { key empty$
+                { "to sort, need author, editor, translator, or key in " 
+                  cite$ * warning$ ""
+                }
+                { key sortify }
+              if$
             }
-            { key sortify }
+            { translator sort.format.names }
           if$
         }
         { editor sort.format.names }
@@ -1849,7 +1964,7 @@ FUNCTION {presort}
       or
     or
   or
-    'author.editor.sort
+    'author.editor.translator.sort   % translator added
     { type$ "proceedings" =
         'editor.organization.sort
         { type$ "manual" =
