@@ -1,8 +1,8 @@
 %%% ====================================================================
 %%%  @BibTeX-style-file{
 %%%     author          = "David Lamkin",
-%%%     version         = "B.10",
-%%%     date            = "14 May 2026",
+%%%     version         = "B.11",
+%%%     date            = "21 May 2026",
 %%%     filename        = "csecs.bst",
 %%%     address         = "",
 %%%     checksum        = "",
@@ -12,9 +12,9 @@
 %%%                        less in the Council of Science Editors (CSE)
 %%%                        citation-sequence (ninth edition) format. It 
 %%%                        was adapted from Patrick W. Daly's unsrtnat.bst,
-%%%                        incorporating features of Alan Rogers' cbe.bst
-%%%                        and Patrick W. Daly and Arthur Ogawa's 
-%%%                        merlin.mbs".
+%%%                        incorporating features of Alan Rogers' cbe.bst,
+%%%                        Erik Meijer's apacite.bst and Patrick W. Daly 
+%%%                        and Arthur Ogawa's merlin.mbs".
 %%%
 %%%     Usage: The preamble of the .tex document has to contain at least:
 %%%
@@ -32,7 +32,7 @@
 %%%  }
 %%% ====================================================================
 %
-% BibTeX `csecs' bibliography style (14-May-26 version)
+% BibTeX `csecs' bibliography style (21-May-26 version)
 % An adaptation of the `unsrtnat' style, for use with the natbib package.
 % Copyright (C) 2025, 2026. All rights reserved.
 % Copying of this file is allowed, provided that if you make any changes at all
@@ -496,12 +496,6 @@ FUNCTION {format.key}
   if$
 }
 
-FUNCTION {get.bbl.editor}
-{ editor num.names$ #1 > 'bbl.editors 'bbl.editor if$ }
-
-FUNCTION {get.bbl.translator}
-{ translator num.names$ #1 > 'bbl.translators 'bbl.translator if$ }
-
 FUNCTION {format.editors}
 { editor empty$
     { "" }
@@ -514,26 +508,45 @@ FUNCTION {format.editors}
   if$
 }
 
-FUNCTION {format.editors.primary}
+FUNCTION {format.editors.translators.primary}
 %
-% Editors in primary position in {book} and {inbook}
+% Editors and/or translators in primary position in {book} and {inbook}
 % when there is no author.
 %
-{ editor "editor" format.names duplicate$ empty$ 'skip$
-    {
-      ", " * get.bbl.editor *
+{ editor empty$
+    { translator empty$
+        { "" }
+        { translator "translator" format.names
+          translator num.names$ #1 >
+            { ", " * bbl.translators * }
+            { ", " * bbl.translator * }
+          if$
+        }
+      if$
     }
-  if$
-}
-
-FUNCTION {format.translators.primary}
-%
-% Translators in primary position in {book} and {inbook}
-% when there is no author.
-%
-{ translator "translator" format.names duplicate$ empty$ 'skip$
-    {
-      ", " * get.bbl.translator *
+    { editor "editor" format.names
+      editor num.names$ #1 >
+        { ", " * bbl.editors * }
+        { ", " * bbl.editor * }
+      if$
+      translator empty$
+        'skip$
+        { editor translator =
+            { editor num.names$ #1 >
+                { " " * bbl.and * " " * bbl.translators * }
+                { " " * bbl.and * " " * bbl.translator * }
+              if$
+            }
+            { "; " *
+              translator "translator" format.names *
+              translator num.names$ #1 >
+                { ", " * bbl.translators * }
+                { ", " * bbl.translator * }
+              if$
+            }
+          if$
+        }
+      if$
     }
   if$
 }
@@ -561,8 +574,7 @@ FUNCTION {format.editors.secondary}
 FUNCTION {format.translators.secondary}
 %
 % Translators in secondary position in {book} and {inbook}
-% Separate editors and translators is only a temporary solution;
-% ultimately they might be combined into one function.
+% when there is an author in primary position.
 %
 { author empty$
     { "" }
@@ -582,8 +594,6 @@ FUNCTION {format.translators.secondary}
 FUNCTION {format.translators.incollection}
 %
 % Translators in secondary/tertiary(?) position in {incollection}
-% Separate editors and translators is only a temporary solution;
-% ultimately they might be combined into one function.
 %
 { editor empty$
     { "" }
@@ -1313,8 +1323,7 @@ FUNCTION {newspaper} { article }
 FUNCTION {book}
 { output.bibitem
   author empty$
-    { format.editors.primary "author and editor" output.check
-      format.translators.primary output
+    { format.editors.translators.primary "author and editor" output.check
       editor format.key output
     }
     { format.authors output.nonnull
@@ -1370,8 +1379,7 @@ FUNCTION {booklet}
 FUNCTION {inbook}
 { output.bibitem
   author empty$
-    { format.editors.primary "author and editor" output.check
-      format.translators.primary output
+    { format.editors.translators.primary "author and editor" output.check
       editor format.key output
     }
     { format.authors output.nonnull
