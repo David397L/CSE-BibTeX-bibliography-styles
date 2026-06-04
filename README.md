@@ -13,6 +13,8 @@ This is the most recent (2024) edition of the CSE manual of style.
 
 These style files contain support for including DOIs/URLs and for citing online/news articles, web pages and edited/translated books.
 
+More user-friendly instruction guides are on their way, which will include illustrated examples of the new functionalities.
+
 If you use any of these files, please consider giving me a star if you liked the results, or let me know if you didn't. If you would like to develop anything further, please make a pull request.
 
 Happy BibTeXing!
