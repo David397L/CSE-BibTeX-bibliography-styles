@@ -1,16 +1,17 @@
 %
-% This is csedemo.bib,
-% a demonstration database for my Council of Science Editors BibTeX styles.
+% This is csedemo.bib, a demonstration database for my 
+% Council of Science Editors BibTeX bibliography styles.
 % Copyright (C) 2025,2026 David Lamkin.
 % Unlimited copying and redistribution of this file are permitted if it
 % is unmodified. Modifications (and their redistribution) are also
 % permitted, as long as the resulting file is renamed.
 %
-% Please note: although I recommend using only the standard entry
-% types, I have tried to configure my own .bst files to accept some 
-% non-standard entries and handle them (more or less) appropriately,
-% so that a database prepared using those entry types can be used
-% as they are, without the need to spend time changing them.
+% Please note: although I recommend using the standard entry types where 
+% they exist, I have tried to configure my own .bst files to accept some 
+% non-standard entries and handle them (more or less) appropriately, so 
+% that a database prepared using those entries can be used as they are, 
+% without the need to spend time changing them. Some non-standard elements 
+% are needed in order to meet the requirements of today's reference styles. 
 % Some examples of this can be seen in what follows.
 %
 
@@ -40,6 +41,17 @@
   number = 12,
   pages = {1291--1297},
   doi = {10.1001/jamaophthalmol.2020.4516}
+  }
+
+@book{Asi20,
+  author = {Asimellis, George},
+  title = {Wave Optics},
+  publisher = {SPIE},
+  year = 2020,
+  series = {Lectures in Optics},
+  volume = 3,
+  doi = {10.1117/3.2506314},
+  note = {396p}
   }
 
 @article{BDS22,
@@ -132,8 +144,7 @@
   title = {The Holy Grail of Ancient Cereals},
   editor = {Boukid, F.},
   booktitle = {Cereal-based Foodstuffs: The Backbone of {M}editerranean Cuisine},
-  address = {New York (NY)},
-  publisher = {Springer},
+  publisher = {Springer International Publishing},
   year = 2021,
   pages = {269--301}
   }
@@ -166,6 +177,17 @@
   howpublished = {US Centers for Disease Control and Prevention, National Center for Immunization and Respiratory Diseases, Division of Viral Diseases},
   note = {[updated 2022 Jan~25]},
   url = {https://www.cdc.gov/coronavirus/2019-ncov/community/health-equity/race-ethnicity.html}
+  }
+
+@article{Jur21,
+  author = {Jury, Mark R. and Gaviria Pab{\'o}n, Am{\'e}rica R.},
+  title = {Dispersion of Smoke Plumes over {South America}},
+  journal = {Earth Interact},
+  year = 2021,
+  volume = 25,
+  number = 1,
+  pages = {},
+  doi = {10.1175/EI-D-20-0004.1}
   }
 
 @book{Kas26,
@@ -263,6 +285,34 @@
   urldate = "2022 " # jan # "~3"
   }
 
+@book{Mor92,
+  editor = {Morris, C.},
+  year = {c1992},
+  title = {{Academic Press} Dictionary of Science and Technology},
+  publisher = {Academic Press}
+  }
+
+@book{NeEl21,
+  editor = {Negm, A. and Elkhouly, A.},
+  title = {Groundwater in {E}gypt's Deserts},
+  publisher = {Springer},
+  year = 2021,
+  series = {Springer Water},
+  volume = 36,
+  doi = {10.1007/978-3-030-77622-0},
+  note = {442p}
+  }
+
+@book{Ngu21,
+  author = {Nguyen-Kim, M. T.},
+  title = {Komisch, alles chemish! [{C}hemistry for Breakfast: The Amazing Science of Everyday Life]},
+  translator = {Pybus, S.},
+  illustrator = {Lenkova, C.},
+  publisher = {Greystone Books},
+  year = 2021,
+  note = {German, English}
+  }
+
 @book{Rab19,
   editor = {A. B. Rabinovich and H. M Fritz and Y. Tanioka and Geist, E. L.},
   year = 2019,
@@ -277,6 +327,13 @@
   publisher = {Harvard University Press},
   address = {Cambridge (MA)},
   year = 2023
+  }
+
+@book{Tri57,
+  author = {Tripler, C. S.},
+  year = {{[1857?]}},
+  title = {Delirium Tremens: Its Nature and Treatment},
+  publisher = {[publisher unknown]}
   }
 
 @article{YKH18,
@@ -350,7 +407,7 @@
   }
 
 % SPECIAL ISSUE OF A JOURNAL, WITH EDITOR
-@article{Goo99,
+@periodical{Goo99,
   editor = {Good, Thomas L.},
   title = {Non-Subject-Matter Outcomes of Schooling},
   note = {Special issue},

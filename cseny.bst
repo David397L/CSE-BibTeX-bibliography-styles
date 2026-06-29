@@ -1,8 +1,8 @@
 %%% ====================================================================
 %%%  @BibTeX-style-file{
 %%%     author          = "David Lamkin",
-%%%     version         = "B.16",
-%%%     date            = "21 May 2026",
+%%%     version         = "B.17",
+%%%     date            = "28 June 2026",
 %%%     filename        = "cseny.bst",
 %%%     address         = "",
 %%%     checksum        = "",
@@ -10,8 +10,8 @@
 %%%     supported       = "yes",
 %%%     abstract        = "The file produces bibliographies more or
 %%%                        less in the Council of Science Editors (CSE) 
-%%%                        name-year (ninth edition) format. It
-%%%                        was adapted from Patrick W. Daly's plainnat.bst,
+%%%                        name-year (ninth edition) format. It was
+%%%                        adapted from Patrick W. Daly's plainnat.bst,
 %%%                        incorporating features of Alan Rogers' cbe.bst, 
 %%%                        Erik Meijer's apacite.bst and Patrick W. Daly 
 %%%                        and Arthur Ogawa's merlin.mbs".
@@ -37,7 +37,7 @@
 %%%  }
 %%% ====================================================================
 %
-% BibTeX `cseny' bibliography style (21-May-26 version)
+% BibTeX `cseny' bibliography style (28-Jun-26 version)
 % An adaptation of the `plainnat' style, for use with the natbib package.
 % Copyright (C) 2025, 2026. All rights reserved.
 % Copying of this file is allowed, provided that if you make any changes at all
@@ -69,6 +69,7 @@ ENTRY
     editor
     eid
     howpublished
+    illustrator
     institution
     journal
     key
@@ -285,6 +286,12 @@ FUNCTION {bbl.editor}
 
 FUNCTION {bbl.edby}
 { "edited by" }
+
+FUNCTION {bbl.illustrators}
+{ "illustrators" }
+
+FUNCTION {bbl.illustrator}
+{ "illustrator" }
 
 FUNCTION {bbl.translators}
 { "translators" }
@@ -552,39 +559,50 @@ FUNCTION {format.editors.translators.primary}
   if$
 }
 
-FUNCTION {format.editors.secondary}
+FUNCTION {format.translators.editors.secondary}
 %
-% Editors in secondary position in {book} and {inbook}
+% Translators and/or editors in secondary position in {book} and {inbook}
 % when there is an author in primary position.
-%
-{ editor empty$
-    { "" }
-    { author empty$
-        { "" }
-        { editor "editor" format.names
-          editor num.names$ #1 >
-            { ", " * bbl.editors * }
-            { ", " * bbl.editor * }
-          if$
-        }
-      if$
-    }
-  if$
-}
-
-FUNCTION {format.translators.secondary}
-%
-% Translators in secondary position in {book} and {inbook}
-% when there is an author in primary position.
+% If there is no author, this function does not run. 
+% Hence, the author field in such a bibentry must *not* be empty.
+% If the author is not a person's name, use author = {{...}}
+% rather than key = {...} in the BibTeX database to achieve this. 
 %
 { author empty$
-    { "" }
+  { "" }
     { translator empty$
-        { "" }
+        { editor empty$
+            { "" }
+            { editor "editor" format.names
+              editor num.names$ #1 >
+                { ", " * bbl.editors * }
+                { ", " * bbl.editor * }
+              if$
+            }
+          if$
+        }
         { translator "translator" format.names
           translator num.names$ #1 >
             { ", " * bbl.translators * }
             { ", " * bbl.translator * }
+          if$
+          editor empty$
+            'skip$
+             { translator editor =
+                { translator num.names$ #1 >
+                    { " " * bbl.and * " " * bbl.editors * }
+                    { " " * bbl.and * " " * bbl.editor * }
+                  if$
+                }
+                { "; " *
+                  editor "editor" format.names *
+                  editor num.names$ #1 >
+                    { ", " * bbl.editors * }
+                    { ", " * bbl.editor * }
+                  if$
+                }
+              if$
+            }
           if$
         }
       if$
@@ -595,6 +613,8 @@ FUNCTION {format.translators.secondary}
 FUNCTION {format.translators.incollection}
 %
 % Translators in secondary/tertiary(?) position in {incollection}
+% There may be ambiguity in this, as regards whether the translator
+% has translated the chapter being cited, or the entire collection.
 %
 { editor empty$
     { "" }
@@ -610,6 +630,21 @@ FUNCTION {format.translators.incollection}
             }
           if$
         }
+      if$
+    }
+  if$
+}
+
+FUNCTION {format.illustrators.secondary}
+%
+% Illustrators in secondary position in {book} and {inbook}
+%
+{ illustrator empty$
+    { "" }
+    { illustrator "illustrator" format.names
+      illustrator num.names$ #1 >
+        { ", " * bbl.illustrators * }
+        { ", " * bbl.illustrator * }
       if$
     }
   if$
@@ -1262,10 +1297,15 @@ FUNCTION {article}
 FUNCTION {magazine} { article }
 %
 % Allow @magazine as an alias for @article
-
+%
 FUNCTION {newspaper} { article }
 %
 % Allow @newspaper as an alias for @article
+%
+FUNCTION {periodical} { article }
+%
+% Allow @periodical as an alias for @article
+%
 
 FUNCTION {book}
 { output.bibitem
@@ -1288,8 +1328,8 @@ FUNCTION {book}
     { format.edition output
       format.bvolume output
       new.sentence
-      format.translators.secondary output
-      format.editors.secondary output
+      format.translators.editors.secondary output
+      format.illustrators.secondary output
       new.sentence
       publisher "publisher" output.check
       new.sentence
@@ -1344,8 +1384,8 @@ FUNCTION {inbook}
     { format.edition output
       format.bvolume output
       new.sentence
-      format.translators.secondary output
-      format.editors.secondary output
+      format.translators.editors.secondary output
+      format.illustrators.secondary output
       new.sentence
       publisher "publisher" output.check
       new.sentence
@@ -1380,6 +1420,7 @@ FUNCTION {incollection}
       format.bvolume output
       new.sentence
       format.translators.incollection output
+      format.illustrators.secondary output
       new.sentence
       publisher "publisher" output.check
       new.sentence
@@ -1507,6 +1548,7 @@ FUNCTION {misc}
 FUNCTION {webpage} { misc }
 %
 % Allow @webpage as an alias for @misc
+%
 
 FUNCTION {phdthesis}
 { output.bibitem
@@ -1675,22 +1717,7 @@ FUNCTION {author.key.label}
   if$
 }
 
-%FUNCTION {author.editor.key.label}   % like plainnat
-%{ author empty$
-%    { editor empty$
-%        { key empty$
-%            { cite$ #1 #3 substring$ }
-%            'key
-%          if$
-%        }
-%        { editor format.lab.names }
-%      if$
-%    }
-%    { author format.lab.names }
-%  if$
-%}
-
-FUNCTION {author.editor.translator.key.label}   % translator added
+FUNCTION {author.editor.translator.key.label}
 { author empty$
     { editor empty$
         { translator empty$
@@ -1744,7 +1771,7 @@ FUNCTION {editor.key.organization.label}
 FUNCTION {calc.short.authors}
 %
 % Includes "article" and "misc" which have had an editor option added,
-% and alias entry types "magazine", "newspaper" and "webpage".
+% and alias entry types "magazine", "newspaper", "periodical" and "webpage".
 %
 { type$ "article" =
     type$ "book" =
@@ -1752,14 +1779,16 @@ FUNCTION {calc.short.authors}
         type$ "magazine" =
           type$ "misc" =
             type$ "newspaper" =
-              type$ "webpage" =
+              type$ "periodical" =
+                type$ "webpage" =
+              or
             or
           or
         or
       or
     or
   or
-    'author.editor.translator.key.label   % translator added
+    'author.editor.translator.key.label
     { type$ "proceedings" =
     'editor.key.organization.label
        { type$ "manual" =
@@ -1832,24 +1861,7 @@ FUNCTION {author.sort}
   if$
 }
 
-%FUNCTION {author.editor.sort}   % like plainnat
-%{ author empty$
-%    { editor empty$
-%        { key empty$
-%            { "to sort, need author, editor, or key in " cite$ * warning$
-%              ""
-%            }
-%            { key sortify }
-%          if$
-%        }
-%        { editor sort.format.names }
-%      if$
-%    }
-%    { author sort.format.names }
-%  if$
-%}
-
-FUNCTION {author.editor.translator.sort}   % translator added
+FUNCTION {author.editor.translator.sort}
 { author empty$
     { editor empty$
         { translator empty$
@@ -1907,7 +1919,7 @@ FUNCTION {editor.organization.sort}
 FUNCTION {presort}
 %
 % Includes "article" and "misc" which have had an editor option added,
-% and alias entry types "magazine", "newspaper" and "webpage".
+% and alias entry types "magazine", "newspaper", "periodical" and "webpage".
 %
 { calc.label
   label sortify
@@ -1919,14 +1931,16 @@ FUNCTION {presort}
         type$ "magazine" =
           type$ "misc" =
             type$ "newspaper" =
-              type$ "webpage" =
+              type$ "periodical" =
+                type$ "webpage" =
+              or
             or
           or
         or
       or
     or
   or
-    'author.editor.translator.sort   % translator added
+    'author.editor.translator.sort
     { type$ "proceedings" =
         'editor.organization.sort
         { type$ "manual" =
