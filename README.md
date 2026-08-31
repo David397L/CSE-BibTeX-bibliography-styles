@@ -6,7 +6,7 @@ csecs.bst is a BibTeX bibliography style for the Council of Science Editors (CSE
 
 cseny.bst is a BibTeX bibliography style for the Council of Science Editors (CSE) name-year (ninth edition) citation style.
 
-The initial development goal (en route to a full implementation) is to match the description of the style at
+The initial development goal (en route to a full implementation) is to match as closely as possible the description of the style at
 https://www.csemanual.org/Tools/CSE-Citation-Quick-Guide.html
 
 This is the current (2024) edition of the CSE manual.
