@@ -1,8 +1,8 @@
 %%% ====================================================================
 %%%  @BibTeX-style-file{
 %%%     author          = "David Lamkin",
-%%%     version         = "B.14",
-%%%     date            = "16 August 2026",
+%%%     version         = "B.15",
+%%%     date            = "8 November 2026",
 %%%     filename        = "csecs.bst",
 %%%     address         = "",
 %%%     checksum        = "",
@@ -32,7 +32,7 @@
 %%%  }
 %%% ====================================================================
 %
-% BibTeX `csecs' bibliography style (16-Aug-26 version)
+% BibTeX `csecs' bibliography style (08-Nov-26 version)
 % An adaptation of the `unsrtnat' style, for use with the natbib package.
 % Copyright (C) 2025, 2026. All rights reserved.
 % Copying of this file is allowed, provided that if you make any changes at all
@@ -268,24 +268,6 @@ FUNCTION {parenthesize}
 
 FUNCTION {capitalize}
 { "u" change.case$ "t" change.case$ }
-
-FUNCTION {comma}
-{ "," }
-
-FUNCTION {period}
-{ "." }
-
-FUNCTION {hyphen}
-{ "-" }
-
-FUNCTION {colon}
-{ ":" }
-
-FUNCTION {semicolon}
-{ ";" }
-
-FUNCTION {space}
-{ " " }
 
 FUNCTION {space.word}
 { " " swap$ * " " * }
@@ -945,13 +927,29 @@ FUNCTION {either.or.both.check}
 }
 
 FUNCTION {format.bvolume}
+%
+% The volume number of a book when the series field is empty
+%
 { volume empty$
     { "" }
-    { bbl.volume capitalize volume tie.or.space.prefix
-      "volume" bibinfo.check * *
-      series "series" bibinfo.check
-      duplicate$ empty$ 'pop$
-        { "(" swap$ * "; " * swap$ * ")" * }
+    { series empty$
+        { bbl.volume capitalize volume tie.or.space.connect }
+        { "" }
+      if$
+    }
+  if$
+}
+
+FUNCTION {format.bvolume.series}
+%
+% The series and volume number of a book, like "(Series Title; vol #)"
+% when the series and volume fields are both non-empty
+%
+{ series empty$
+    { "" }
+    { volume empty$
+        { "" }
+        { series "; " * bbl.volume volume tie.or.space.connect * }
       if$
       "volume and number" number either.or.check
     }
@@ -959,6 +957,10 @@ FUNCTION {format.bvolume}
 }
 
 FUNCTION {format.number.series}
+%
+% The series and number of a book, like "(Series Title; #)"
+% or just "(Series title)" without a number
+%
 { volume empty$
     { number empty$
         { series field.or.null }
@@ -1130,7 +1132,7 @@ FUNCTION {format.vol.num.pages}
   pages empty$
     'skip$
     { duplicate$ empty$
-        { pop$ format.pages }
+        { pop$ format.journal.pages }
         { ":" * pages n.dashify * }
       if$
     }
@@ -1247,7 +1249,7 @@ FUNCTION {format.tr.number}
   if$
   number empty$
     { "t" change.case$ }
-    { number tie.or.space.connect }
+    { " " * bbl.nr capitalize * ":" * number tie.or.space.connect }
   if$
 }
 
@@ -1396,14 +1398,12 @@ FUNCTION {book}
   format.btitle "title" output.check
   new.sentence
   crossref missing$
-    { format.edition output
+    { format.bvolume output
       new.sentence
-      format.bvolume output
+      format.edition output
       new.sentence
       format.translators.editors.secondary output
       format.illustrators.secondary output
-      new.sentence
-      format.number.series parenthesize output
       new.sentence
       publisher "publisher" output.check
     }
@@ -1412,6 +1412,9 @@ FUNCTION {book}
     }
   if$
   format.date "year" output.check
+  new.sentence
+  format.bvolume.series parenthesize output
+  format.number.series parenthesize output
   new.sentence
   note output
   new.sentence
@@ -1453,17 +1456,18 @@ FUNCTION {inbook}
   format.btitle "title" output.check
   new.sentence
   crossref missing$
-    { format.edition output
+    { format.bvolume output
       new.sentence
-      format.bvolume output
+      format.edition output
       new.sentence
       format.translators.editors.secondary output
       format.illustrators.secondary output
       new.sentence
-      format.number.series parenthesize output
-      new.sentence
       publisher "publisher" output.check
       format.date "year" output.check
+      new.sentence
+      format.bvolume.series parenthesize output
+      format.number.series parenthesize output
       new.sentence
       format.chapter.pages "chapter and pages" output.check
     }
@@ -1480,6 +1484,10 @@ FUNCTION {inbook}
 }
 
 FUNCTION {incollection}
+%
+% Output is not quite in CSE style when there is no editor;
+% work in progress to fix in a future version.
+%
 { output.bibitem
   format.authors "author" output.check
   author format.key output
@@ -1491,16 +1499,17 @@ FUNCTION {incollection}
   crossref missing$
     { format.in.ed.booktitle "booktitle" output.check
       new.sentence
-      format.edition output
-      new.sentence
       format.bvolume output
+      new.sentence
+      format.edition output
       new.sentence
       format.illustrators.secondary output
       new.sentence
-      format.number.series parenthesize output
-      new.sentence
       publisher "publisher" output.check
       format.date "year" output.check
+      new.sentence
+      format.bvolume.series parenthesize output
+      format.number.series parenthesize output
       new.sentence
       format.chapter.pages output
     }
@@ -1532,12 +1541,13 @@ FUNCTION {inproceedings}
       publisher output
       format.date "year" output.check
       new.sentence
-      format.pages "pages" output.check
-      new.sentence
+      format.bvolume.series parenthesize output
       format.number.series parenthesize output
+      new.sentence
+      format.pages "pages" output.check
     }
     { format.incoll.inproc.crossref output.nonnull
-      format.pages output
+      format.pages "pages" output.check
     }
   if$
   new.sentence
@@ -1595,7 +1605,7 @@ FUNCTION {mastersthesis}
 FUNCTION {misc}
 %
 % Includes optional "author or editor" routine 
-% to enable citing an item by its editor(s)
+% to enable citing an item by its editor(s).
 %
 { output.bibitem
   author empty$
@@ -1661,12 +1671,12 @@ FUNCTION {proceedings}
   new.sentence
   format.bvolume output
   new.sentence
-  format.number.series parenthesize output
-  new.sentence
   organization output
   publisher output
-  new.sentence
   format.date "year" output.check
+  new.sentence
+  format.bvolume.series parenthesize output
+  format.number.series parenthesize output
   new.sentence
   note output
   new.sentence
