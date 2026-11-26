@@ -1,8 +1,8 @@
 %%% ====================================================================
 %%%  @BibTeX-style-file{
 %%%     author          = "David Lamkin",
-%%%     version         = "B.15",
-%%%     date            = "8 November 2026",
+%%%     version         = "B.15.1",
+%%%     date            = "26 November 2026",
 %%%     filename        = "csecs.bst",
 %%%     address         = "",
 %%%     checksum        = "",
@@ -32,7 +32,7 @@
 %%%  }
 %%% ====================================================================
 %
-% BibTeX `csecs' bibliography style (08-Nov-26 version)
+% BibTeX `csecs' bibliography style (26-Nov-26 version)
 % An adaptation of the `unsrtnat' style, for use with the natbib package.
 % Copyright (C) 2025, 2026. All rights reserved.
 % Copying of this file is allowed, provided that if you make any changes at all
@@ -944,6 +944,7 @@ FUNCTION {format.bvolume.series}
 %
 % The series and volume number of a book, like "(Series Title; vol #)"
 % when the series and volume fields are both non-empty
+% TO FIX: An effective "volume and number" either.or.check is needed...
 %
 { series empty$
     { "" }
@@ -951,7 +952,7 @@ FUNCTION {format.bvolume.series}
         { "" }
         { series "; " * bbl.volume volume tie.or.space.connect * }
       if$
-      "volume and number" number either.or.check
+%      "volume and number" number either.or.check   % but not here!
     }
   if$
 }
