@@ -932,7 +932,7 @@ FUNCTION {format.bvolume.series}
 %
 % The series and volume number of a book, like "(Series Title; vol #)"
 % when the series and volume fields are both non-empty
-% TO FIX: An effective "volume and number" either.or.check is needed somewhere...
+% TO FIX: An effective "volume and number" either.or.check is needed...
 %
 { series empty$
     { "" }
